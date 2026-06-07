@@ -7,6 +7,9 @@ const fraunces = Fraunces({
   variable: "--font-fraunces",
   subsets: ["latin"],
   display: "swap",
+  // Expose Fraunces' variable axes (optical size + softer letterforms) so
+  // headlines can use fontVariationSettings for an editorial, premium feel.
+  axes: ["SOFT", "opsz", "WONK"],
 });
 
 // Body + UI sans. Variable font, full weight range.
