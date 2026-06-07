@@ -31,6 +31,7 @@ This file is the single source of truth for the Patriot Plumbing of Texas projec
 - Include explicit religious references (God, prayer, faith, Bible verses) or political content on the site. The family's values are expressed through behavior and tone, not statements.
 - Use the word "cheap" or pricing-based selling. Emphasize honest work and quality instead.
 - Add features, libraries, or integrations not listed in the Tech Stack section without prior discussion.
+- Implement Resend or any email-sending integration in the MVP. The contact form should exist as UI only, with a disabled or "coming soon" state on the submit button. Use mailto: links and the phone number as primary contact paths until the email backend is unblocked.
 
 ## Tech Stack
 
@@ -38,7 +39,8 @@ This file is the single source of truth for the Patriot Plumbing of Texas projec
 - **Database**: Supabase (Postgres) — free tier
 - **AI / Chatbot**: Anthropic API, model Claude Haiku 4.5 — called directly, no SDK abstraction layer
 - **Maps**: Mapbox GL JS with custom brand-matched style
-- **Transactional Email**: Resend (free tier)
+- **Transactional Email**: NONE for MVP. see chat for context
+  See KNOWN-LIMITATIONS.md for the why and the unblock plan.
 - **Hosting + CI/CD + CDN + SSL**: Vercel (Hobby tier)
 - **Domain registrar**: Cloudflare
 - **Code repository**: GitHub

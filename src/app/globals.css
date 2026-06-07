@@ -1,26 +1,22 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@theme {
+  /* Warm Heritage palette (locked) — exposed as bg-*, text-*, border-* utilities */
+  --color-cream: #f5f1e8; /* Background primary */
+  --color-navy: #1b2a3c; /* Dominant text & structure */
+  --color-rust: #a8323a; /* CTAs & accents */
+  --color-charcoal: #1a1614; /* Max-contrast text */
+  --color-tan: #8b6f47; /* Subtle accents & dividers */
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* Brand typography — wired to the next/font variables defined in layout.tsx.
+     font-serif -> Fraunces, font-sans -> Inter, font-mono -> IBM Plex Mono */
+  --font-serif: var(--font-fraunces), ui-serif, Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-ibm-plex-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-cream);
+  color: var(--color-navy);
+  font-family: var(--font-sans);
 }
