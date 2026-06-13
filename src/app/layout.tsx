@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Fraunces, Inter, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
+import FloatingCallButton from "@/components/FloatingCallButton";
 
 // Display serif — headings and pull quotes. Variable font, full weight range.
 const fraunces = Fraunces({
@@ -43,6 +44,7 @@ export default function RootLayout({
         className={`${fraunces.variable} ${inter.variable} ${ibmPlexMono.variable} antialiased`}
       >
         {children}
+        <FloatingCallButton />
       </body>
     </html>
   );
