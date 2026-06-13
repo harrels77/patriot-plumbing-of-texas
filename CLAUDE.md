@@ -20,13 +20,13 @@ This file is the single source of truth for the Patriot Plumbing of Texas projec
 - Write English content first, then provide Spanish translations on the chatbot and key user-facing strings.
 - Ask for explicit approval before running `git commit` or `git push`.
 - Write commit messages using Conventional Commits format: `feat:`, `fix:`, `chore:`, `docs:`, `refactor:`, `style:`.
-- Use documentary-style photography references only (real people, real environments, golden hour, warm tones).
+- Use documentary-style photography (real Patriot Plumbing technicians, real Texas environments, golden-hour lighting). When real photos are not yet available, use charcoal rectangle placeholders (bg-charcoal) — documented in KNOWN-LIMITATIONS.md.
 - Reference the real business hours (Mon–Fri 8AM–5PM, closed weekends) everywhere availability is mentioned.
 
 **Never:**
 - Use any color outside the Warm Heritage palette (Cream, Navy, Rust Red, Charcoal, Tan).
 - Claim 24/7 availability anywhere on the site. The business is closed on weekends.
-- Use generic stock photography of smiling plumbers giving thumbs up.
+- Use stock plumber photos, smiling-plumber-thumbs-up stock imagery, or AI-generated photography on the website.
 - Push code to the remote repository without explicit user approval.
 - Include explicit religious references (God, prayer, faith, Bible verses) or political content on the site. The family's values are expressed through behavior and tone, not statements.
 - Use the word "cheap" or pricing-based selling. Emphasize honest work and quality instead.

@@ -1,5 +1,58 @@
+type Service = {
+  number: string;
+  title: string;
+  description: string;
+  href: string;
+};
+
+const services: Service[] = [
+  {
+    number: "01",
+    title: "Emergency Plumbing",
+    description:
+      "When pipes burst or drains back up, we respond quickly during business hours.",
+    href: "/services/emergency-plumbing",
+  },
+  {
+    number: "02",
+    title: "Water Heaters",
+    description:
+      "Tank or tankless. Repair, replace, install. Hot water restored fast.",
+    href: "/services/water-heaters",
+  },
+  {
+    number: "03",
+    title: "Drain Cleaning",
+    description:
+      "From slow sinks to mainline backups. Cleared without damage.",
+    href: "/services/drain-cleaning",
+  },
+  {
+    number: "04",
+    title: "Repiping",
+    description:
+      "Whole-house or partial. Copper, PEX. Done right the first time.",
+    href: "/services/repiping",
+  },
+  {
+    number: "05",
+    title: "Sewer Repair",
+    description:
+      "Trenchless and traditional methods. We protect your yard.",
+    href: "/services/sewer-repair",
+  },
+  {
+    number: "06",
+    title: "Commercial Plumbing",
+    description:
+      "Restaurants, offices, multi-unit buildings. Maintenance and repair contracts welcome.",
+    href: "/services/commercial-plumbing",
+  },
+];
+
 export default function Home() {
   return (
+    <>
     <section className="mx-auto grid min-h-[85vh] max-w-7xl grid-cols-1 items-center gap-12 px-6 py-16 sm:px-10 lg:grid-cols-[1.15fr_1fr] lg:gap-16 lg:px-16 lg:py-0">
       {/* Left column — headline, subtitle, CTAs, service line */}
       <div className="flex max-w-xl flex-col gap-10">
@@ -51,5 +104,71 @@ export default function Home() {
         className="h-64 w-full rounded-xl bg-charcoal sm:h-96 lg:h-[70vh]"
       />
     </section>
+
+    {/* Services Overview — array-driven grid of the six core services */}
+    <section aria-label="Our services" className="bg-cream py-16 sm:py-20 lg:py-24">
+      <div className="mx-auto max-w-7xl px-6 sm:px-10">
+        {/* Heading block */}
+        <div className="mb-12 lg:mb-16">
+          <p className="font-mono text-xs uppercase tracking-[0.2em] text-tan">
+            02 · OUR SERVICES
+          </p>
+          <h2
+            className="mt-6 font-serif text-4xl font-semibold text-navy sm:text-5xl"
+            style={{ fontVariationSettings: "'opsz' 144, 'SOFT' 50" }}
+          >
+            Our Services
+          </h2>
+        </div>
+
+        {/* Card grid — rendered by mapping over the services array */}
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 lg:gap-10">
+          {services.map((service) => (
+            <a
+              key={service.number}
+              href={service.href}
+              aria-label={`Learn more about ${service.title}`}
+              className="group flex flex-col gap-6"
+            >
+              {/* Photo placeholder — documentary photo to come */}
+              <div
+                aria-hidden="true"
+                className="aspect-[4/3] w-full rounded-lg bg-charcoal"
+              />
+
+              {/* Section number */}
+              <span className="font-mono text-xs uppercase tracking-[0.2em] text-rust">
+                {service.number}
+              </span>
+
+              {/* Service title */}
+              <h3
+                className="font-serif text-2xl font-semibold text-navy sm:text-3xl"
+                style={{ fontVariationSettings: "'opsz' 96, 'SOFT' 50" }}
+              >
+                {service.title}
+              </h3>
+
+              {/* Description */}
+              <p className="font-sans text-base leading-relaxed text-navy/80">
+                {service.description}
+              </p>
+
+              {/* Learn more affordance — arrow shifts on hover */}
+              <span className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.2em] text-navy">
+                Learn more
+                <span
+                  aria-hidden="true"
+                  className="transition-transform duration-300 ease-out group-hover:translate-x-1"
+                >
+                  →
+                </span>
+              </span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+    </>
   );
 }
