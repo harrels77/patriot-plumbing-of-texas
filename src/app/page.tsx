@@ -169,6 +169,111 @@ export default function Home() {
         </div>
       </div>
     </section>
+
+    {/* Final CTA — closing call-to-action driving phone calls */}
+    <section aria-label="Get in touch" className="bg-cream py-20 sm:py-24 lg:py-28">
+      <div className="mx-auto max-w-3xl px-6 text-center sm:px-10">
+        {/* Editorial eyebrow */}
+        <p className="mb-6 font-mono text-xs uppercase tracking-[0.2em] text-tan">
+          04 · GET IN TOUCH
+        </p>
+
+        {/* Headline */}
+        <h2
+          className="mb-6 font-serif text-4xl font-semibold text-navy sm:text-5xl lg:text-6xl"
+          style={{ fontVariationSettings: "'opsz' 144, 'SOFT' 50" }}
+        >
+          Need a plumber? We&apos;re here.
+        </h2>
+
+        {/* Subtitle */}
+        <p className="mb-10 font-sans text-lg text-navy sm:text-xl">
+          Family-owned, Wilson County-rooted. Mon–Fri 8 AM–5 PM.
+        </p>
+
+        {/* CTA button — slightly more generous padding than the hero button */}
+        <a
+          href="tel:+12108571727"
+          className="inline-flex items-center justify-center rounded-full bg-rust px-8 py-4 font-sans text-base font-medium text-cream transition-colors hover:bg-rust/90 sm:text-lg"
+        >
+          Call (210) 857-1727
+        </a>
+      </div>
+    </section>
+
+    {/* Footer — contact, services, service areas, and copyright */}
+    <footer aria-label="Site footer" className="bg-navy py-16 text-cream sm:py-20">
+      <div className="mx-auto max-w-7xl px-6 sm:px-10">
+        {/* 3-column grid */}
+        <div className="mb-12 grid grid-cols-1 gap-12 lg:mb-16 lg:grid-cols-3 lg:gap-16">
+          {/* Column 1 — Contact */}
+          <div>
+            <p className="mb-6 font-mono text-xs uppercase tracking-[0.2em] text-tan">
+              CONTACT
+            </p>
+            <p className="mb-4 font-serif text-lg text-cream">
+              Patriot Plumbing of Texas, LLC
+            </p>
+            <p className="mb-4 font-sans text-sm leading-relaxed text-cream/80">
+              202 Cannon Lane
+              <br />
+              Stockdale, TX 78160
+            </p>
+            <a
+              href="tel:+12108571727"
+              className="mb-2 block font-sans text-base text-cream transition-colors hover:text-rust"
+            >
+              (210) 857-1727
+            </a>
+            <p className="font-sans text-sm text-cream/80">
+              Mon–Fri · 8 AM – 5 PM
+            </p>
+          </div>
+
+          {/* Column 2 — Services (reuses the module-scope services array) */}
+          <div>
+            <p className="mb-6 font-mono text-xs uppercase tracking-[0.2em] text-tan">
+              SERVICES
+            </p>
+            <ul className="list-none space-y-3">
+              {services.map((service) => (
+                <li key={service.href}>
+                  <a
+                    href={service.href}
+                    className="font-sans text-base text-cream/80 transition-colors hover:text-rust"
+                  >
+                    {service.title}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Column 3 — Service Areas (plain text; Service Areas page not built yet) */}
+          <div>
+            <p className="mb-6 font-mono text-xs uppercase tracking-[0.2em] text-tan">
+              SERVICE AREAS
+            </p>
+            <ul className="list-none space-y-3 font-sans text-base text-cream/80">
+              <li>Stockdale</li>
+              <li>Sutherland Springs</li>
+              <li>La Vernia</li>
+              <li>Floresville</li>
+              <li>Seguin</li>
+              <li>Geronimo</li>
+              <li>McQueeney</li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Copyright bar */}
+        <div className="border-t border-cream/15" />
+        <p className="pt-8 font-sans text-xs text-cream/60 sm:text-sm">
+          © 2026 Patriot Plumbing of Texas, LLC · Serving Wilson &amp; Guadalupe
+          Counties
+        </p>
+      </div>
+    </footer>
     </>
   );
 }
