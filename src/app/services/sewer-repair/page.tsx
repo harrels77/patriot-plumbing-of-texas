@@ -9,7 +9,7 @@ import WhyUsMini from "@/components/services/WhyUsMini";
 import { services } from "@/data/services";
 
 export const metadata: Metadata = {
-  title: "Sewer Repair — Patriot Plumbing of Texas",
+  title: "Sewer Repair",
   description:
     "Trenchless and traditional sewer line repair in Wilson County. Camera inspections, root removal, full replacements. Family-owned since 1983.",
 };

@@ -9,7 +9,7 @@ import WhyUsMini from "@/components/services/WhyUsMini";
 import { services } from "@/data/services";
 
 export const metadata: Metadata = {
-  title: "Repiping — Patriot Plumbing of Texas",
+  title: "Repiping",
   description:
     "Whole-house and partial repiping in copper or PEX. Built to last forty years. Family-owned, serving Wilson County since 1983.",
 };

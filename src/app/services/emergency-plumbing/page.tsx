@@ -9,7 +9,7 @@ import WhyUsMini from "@/components/services/WhyUsMini";
 import { services } from "@/data/services";
 
 export const metadata: Metadata = {
-  title: "Emergency Plumbing — Patriot Plumbing of Texas",
+  title: "Emergency Plumbing",
   description:
     "Burst pipes, major leaks, no water. Fast response during business hours in Wilson County. Family-owned, since 1983.",
 };

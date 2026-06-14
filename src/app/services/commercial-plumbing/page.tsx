@@ -9,7 +9,7 @@ import WhyUsMini from "@/components/services/WhyUsMini";
 import { services } from "@/data/services";
 
 export const metadata: Metadata = {
-  title: "Commercial Plumbing — Patriot Plumbing of Texas",
+  title: "Commercial Plumbing",
   description:
     "Restaurants, offices, multi-unit buildings. Maintenance contracts and emergency repair in Wilson County. Family-owned since 1983.",
 };

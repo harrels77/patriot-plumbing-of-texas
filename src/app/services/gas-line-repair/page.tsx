@@ -9,7 +9,7 @@ import WhyUsMini from "@/components/services/WhyUsMini";
 import { services } from "@/data/services";
 
 export const metadata: Metadata = {
-  title: "Gas Line Repair & Installation — Patriot Plumbing of Texas",
+  title: "Gas Line Repair & Installation",
   description:
     "Licensed gas line repair, replacement, and new installation in Wilson County. Permits, inspection, code-compliant work. Family-owned since 1983.",
 };

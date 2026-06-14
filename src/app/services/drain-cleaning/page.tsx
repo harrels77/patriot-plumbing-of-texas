@@ -9,7 +9,7 @@ import WhyUsMini from "@/components/services/WhyUsMini";
 import { services } from "@/data/services";
 
 export const metadata: Metadata = {
-  title: "Drain Cleaning — Patriot Plumbing of Texas",
+  title: "Drain Cleaning",
   description:
     "Sink, tub, mainline drain clearing and hydro-jetting in Wilson County. Family-owned, since 1983.",
 };

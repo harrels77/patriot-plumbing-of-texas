@@ -9,7 +9,7 @@ import WhyUsMini from "@/components/services/WhyUsMini";
 import { services } from "@/data/services";
 
 export const metadata: Metadata = {
-  title: "Water Softener Installation & Service — Patriot Plumbing of Texas",
+  title: "Water Softener Installation & Service",
   description:
     "Whole-house water softener installation, testing, and service in Wilson County. Texas hard water solved. Family-owned since 1983.",
 };

@@ -9,7 +9,7 @@ import WhyUsMini from "@/components/services/WhyUsMini";
 import { services } from "@/data/services";
 
 export const metadata: Metadata = {
-  title: "Water Heaters — Patriot Plumbing of Texas",
+  title: "Water Heaters",
   description:
     "Tank or tankless water heater install, repair, and replacement. Family-owned, serving Wilson County since 1983.",
 };

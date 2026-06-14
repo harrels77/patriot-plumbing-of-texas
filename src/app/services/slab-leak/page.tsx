@@ -9,7 +9,7 @@ import WhyUsMini from "@/components/services/WhyUsMini";
 import { services } from "@/data/services";
 
 export const metadata: Metadata = {
-  title: "Slab Leak Detection & Repair — Patriot Plumbing of Texas",
+  title: "Slab Leak Detection & Repair",
   description:
     "Hidden slab leak detection and repair in Wilson County. Electronic detection, targeted repair, reroute options. Family-owned since 1983.",
 };
