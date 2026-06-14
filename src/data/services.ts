@@ -1,6 +1,6 @@
 import type { Service } from "@/types/service";
 
-// The six core services, shared across the home page, service pages, and Footer.
+// The nine services, shared across the home page, service pages, and Footer.
 export const services: Service[] = [
   {
     number: "01",
@@ -43,5 +43,26 @@ export const services: Service[] = [
     description:
       "Restaurants, offices, multi-unit buildings. Maintenance and repair contracts welcome.",
     href: "/services/commercial-plumbing",
+  },
+  {
+    number: "07",
+    title: "Slab Leak",
+    description:
+      "Hidden leaks under your foundation. Found with electronic detection, fixed without tearing up your floors.",
+    href: "/services/slab-leak",
+  },
+  {
+    number: "08",
+    title: "Water Softener",
+    description:
+      "Texas hard water solved. Whole-house systems, sized right, installed clean.",
+    href: "/services/water-softener",
+  },
+  {
+    number: "09",
+    title: "Gas Line Repair",
+    description:
+      "Repair, replacement, and new installs. Done with permits, the right materials, and care.",
+    href: "/services/gas-line-repair",
   },
 ];
