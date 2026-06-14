@@ -1,6 +1,18 @@
 import Footer from "@/components/Footer";
 import { services } from "@/data/services";
 
+// Tier-2 services — mentioned on the home page only, no cards or detail pages.
+const additionalServices = [
+  "Tankless water heater installation",
+  "Toilet repair",
+  "Leak detection",
+  "Water filtration",
+  "Faucet repair",
+  "Garbage disposal",
+  "Bathroom plumbing remodel",
+  "Water well systems",
+];
+
 export default function Home() {
   return (
     <>
@@ -118,6 +130,43 @@ export default function Home() {
             </a>
           ))}
         </div>
+      </div>
+    </section>
+
+    {/* Also Handled — tier-2 services, a lighter editorial beat (no cards, no detail pages) */}
+    <section aria-label="Additional services" className="bg-cream py-16 sm:py-20">
+      <div className="mx-auto max-w-7xl px-6 sm:px-10">
+        {/* Editorial eyebrow */}
+        <p className="mb-6 font-mono text-xs uppercase tracking-[0.2em] text-tan">
+          03 · ALSO HANDLED
+        </p>
+
+        {/* Intro line — intentionally smaller than the main Services Overview heading */}
+        <p
+          className="mb-8 font-serif text-2xl font-semibold text-navy sm:text-3xl"
+          style={{ fontVariationSettings: "'opsz' 96, 'SOFT' 50" }}
+        >
+          We also handle
+        </p>
+
+        {/* Tier-2 services rendered as a single flowing block, middot-separated */}
+        <p className="mb-8 max-w-3xl font-sans text-lg leading-relaxed text-navy/90 sm:text-xl">
+          {additionalServices.join(" · ")}
+        </p>
+
+        {/* Editorial closing line — arrow shifts on hover, same pattern as the service cards */}
+        <a
+          href="tel:+12108571727"
+          className="group inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.2em] text-navy"
+        >
+          Call us with any plumbing need
+          <span
+            aria-hidden="true"
+            className="transition-transform duration-300 ease-out group-hover:translate-x-1"
+          >
+            →
+          </span>
+        </a>
       </div>
     </section>
 
