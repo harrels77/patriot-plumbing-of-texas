@@ -114,13 +114,17 @@ The business is a **multi-generational family operation** with 40+ years serving
 
 ## Geographic Scope
 
-The business operates across **two counties** in South-Central Texas: Wilson County and Guadalupe County.
+The business operates across **four counties** in South-Central Texas: Wilson, Guadalupe, Hays, and Comal.
 
-**Cities served (7 total)**:
-- **Wilson County**: Stockdale (HQ), Sutherland Springs, La Vernia, Floresville
-- **Guadalupe County**: Seguin, Geronimo, McQueeney
+**Cities served (9 total)**, in geographic order from the Stockdale HQ:
+- **Wilson County**: Stockdale (HQ), Sutherland Springs, Floresville, La Vernia
+- **Guadalupe County**: Geronimo, McQueeney, Seguin
+- **Hays County**: San Marcos
+- **Comal County**: New Braunfels
 
-The site should never imply service in San Antonio metro, Austin, or other regions outside this scope.
+The region is described as "South-Central Texas" in the copyright and other broad references. New Braunfels (San Antonio metro) and San Marcos (Austin orbit) are intentionally inside the service area.
+
+**Source of truth**: `src/data/service-areas.ts`. Import the city/county list from there — never hardcode service areas in components or pages.
 
 ## Pages on the Website
 

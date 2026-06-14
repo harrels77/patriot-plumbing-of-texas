@@ -1,4 +1,5 @@
 import type { Service } from "@/types/service";
+import { serviceAreas } from "@/data/service-areas";
 
 type FooterProps = {
   services: Service[];
@@ -60,13 +61,9 @@ export default function Footer({ services }: FooterProps) {
               SERVICE AREAS
             </p>
             <ul className="list-none space-y-3 font-sans text-base text-cream/80">
-              <li>Stockdale</li>
-              <li>Sutherland Springs</li>
-              <li>La Vernia</li>
-              <li>Floresville</li>
-              <li>Seguin</li>
-              <li>Geronimo</li>
-              <li>McQueeney</li>
+              {serviceAreas.map((area) => (
+                <li key={area.city}>{area.city}</li>
+              ))}
             </ul>
           </div>
         </div>
@@ -74,8 +71,7 @@ export default function Footer({ services }: FooterProps) {
         {/* Copyright bar */}
         <div className="border-t border-cream/15" />
         <p className="pt-8 font-sans text-xs text-cream/60 sm:text-sm">
-          © 2026 Patriot Plumbing of Texas, LLC · Serving Wilson &amp; Guadalupe
-          Counties
+          © 2026 Patriot Plumbing of Texas, LLC · Serving South-Central Texas
         </p>
       </div>
     </footer>
