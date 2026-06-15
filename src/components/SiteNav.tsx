@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { business } from "@/data/business";
 
 export default function SiteNav() {
@@ -8,28 +9,28 @@ export default function SiteNav() {
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-4 sm:px-10">
         {/* Brand name — links to home */}
-        <a
+        <Link
           href="/"
           className="font-serif text-xl font-semibold text-navy sm:text-2xl"
           style={{ fontVariationSettings: "'opsz' 96, 'SOFT' 50" }}
         >
           Patriot Plumbing of TX
-        </a>
+        </Link>
 
         {/* Right cluster — nav links + CTA */}
         <div className="flex items-center gap-5 sm:gap-8">
-          <a
+          <Link
             href="/about"
             className="font-mono text-xs uppercase tracking-[0.2em] text-navy transition-colors hover:text-rust"
           >
             About
-          </a>
-          <a
+          </Link>
+          <Link
             href="/work"
             className="font-mono text-xs uppercase tracking-[0.2em] text-navy transition-colors hover:text-rust"
           >
             Work
-          </a>
+          </Link>
           <a
             href={`tel:${business.telephone}`}
             className="inline-flex items-center gap-2 rounded-full bg-rust px-4 py-2 font-mono text-xs uppercase tracking-[0.2em] text-cream transition-colors hover:bg-rust/90"

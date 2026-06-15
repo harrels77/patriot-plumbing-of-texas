@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Footer from "@/components/Footer";
 import { services } from "@/data/services";
 import { projects } from "@/data/projects";
@@ -86,9 +87,11 @@ export default function WorkPage() {
                   {/* Photo area — charcoal placeholder until a real photo exists */}
                   <div className="aspect-[4/3] overflow-hidden rounded-lg bg-charcoal">
                     {project.mainPhoto && (
-                      <img
+                      <Image
                         src={project.mainPhoto}
                         alt={project.title}
+                        width={800}
+                        height={600}
                         className="h-full w-full object-cover"
                       />
                     )}
