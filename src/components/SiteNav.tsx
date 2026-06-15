@@ -1,0 +1,46 @@
+import { business } from "@/data/business";
+
+export default function SiteNav() {
+  return (
+    <nav
+      aria-label="Site navigation"
+      className="sticky top-0 z-50 border-b border-tan/30 bg-cream/95 backdrop-blur-sm"
+    >
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-4 sm:px-10">
+        {/* Brand name — links to home */}
+        <a
+          href="/"
+          className="font-serif text-xl font-semibold text-navy sm:text-2xl"
+          style={{ fontVariationSettings: "'opsz' 96, 'SOFT' 50" }}
+        >
+          Patriot Plumbing of TX
+        </a>
+
+        {/* Right cluster — nav links + CTA */}
+        <div className="flex items-center gap-5 sm:gap-8">
+          <a
+            href="/about"
+            className="font-mono text-xs uppercase tracking-[0.2em] text-navy transition-colors hover:text-rust"
+          >
+            About
+          </a>
+          <a
+            href="/work"
+            className="font-mono text-xs uppercase tracking-[0.2em] text-navy transition-colors hover:text-rust"
+          >
+            Work
+          </a>
+          <a
+            href={`tel:${business.telephone}`}
+            className="inline-flex items-center gap-2 rounded-full bg-rust px-4 py-2 font-mono text-xs uppercase tracking-[0.2em] text-cream transition-colors hover:bg-rust/90"
+          >
+            Call
+            <span className="hidden font-mono normal-case tracking-normal sm:inline">
+              {business.telephoneDisplay}
+            </span>
+          </a>
+        </div>
+      </div>
+    </nav>
+  );
+}

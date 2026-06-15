@@ -26,4 +26,12 @@ export const business = {
   // Schema.org openingHours format: "Mo-Fr 08:00-17:00"
   openingHoursSpec: "Mo-Fr 08:00-17:00",
   founded: 1983,
+  // The family's mission statement. Quote and attribution are stored without
+  // decorative quote marks or the em-dash prefix — those are rendered in JSX.
+  // Consumed by the About page Mission section and the Home page Mission section.
+  mission: {
+    quote:
+      "We were born out of a desire to build something lasting for our family — to show the value of perseverance and good, quality, precise work.",
+    attribution: "The Patriot Plumbing family",
+  },
 };

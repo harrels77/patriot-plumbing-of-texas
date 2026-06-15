@@ -3,6 +3,7 @@ import { Fraunces, Inter, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import FloatingCallButton from "@/components/FloatingCallButton";
 import StructuredData from "@/components/StructuredData";
+import SiteNav from "@/components/SiteNav";
 import { business } from "@/data/business";
 
 // Display serif — headings and pull quotes. Variable font, full weight range.
@@ -66,6 +67,7 @@ export default function RootLayout({
       <body
         className={`${fraunces.variable} ${inter.variable} ${ibmPlexMono.variable} antialiased`}
       >
+        <SiteNav />
         {children}
         <FloatingCallButton />
         <StructuredData />

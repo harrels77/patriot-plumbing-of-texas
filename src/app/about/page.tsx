@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Footer from "@/components/Footer";
 import { services } from "@/data/services";
+import { business } from "@/data/business";
 
 export const metadata: Metadata = {
   title: "About",
@@ -66,13 +67,12 @@ export default function AboutPage() {
             className="font-serif text-3xl font-medium leading-[1.2] text-cream sm:text-4xl lg:text-5xl"
             style={{ fontVariationSettings: "'opsz' 144, 'SOFT' 50" }}
           >
-            <span className="text-tan text-[1.2em]">&ldquo;</span>We were born
-            out of a desire to build something lasting for our family — to show
-            the value of perseverance and good, quality, precise work.
+            <span className="text-tan text-[1.2em]">&ldquo;</span>
+            {business.mission.quote}
             <span className="text-tan text-[1.2em]">&rdquo;</span>
           </blockquote>
           <p className="mt-12 font-mono text-xs uppercase tracking-[0.2em] text-tan">
-            — The Patriot Plumbing family
+            {`— ${business.mission.attribution}`}
           </p>
         </div>
       </section>

@@ -1,5 +1,6 @@
 import Footer from "@/components/Footer";
 import { services } from "@/data/services";
+import { business } from "@/data/business";
 
 // Tier-2 services — mentioned on the home page only, no cards or detail pages.
 const additionalServices = [
@@ -68,13 +69,33 @@ export default function Home() {
       />
     </section>
 
+    {/* Mission encart — rupture navy, the family's mission statement */}
+    <section aria-label="Our mission" className="bg-navy py-24 text-cream sm:py-32">
+      <div className="mx-auto max-w-4xl px-6 text-center sm:px-10">
+        <p className="mb-12 font-mono text-xs uppercase tracking-[0.2em] text-tan">
+          02 · OUR MISSION
+        </p>
+        <blockquote
+          className="font-serif text-3xl font-medium leading-[1.2] text-cream sm:text-4xl lg:text-5xl"
+          style={{ fontVariationSettings: "'opsz' 144, 'SOFT' 50" }}
+        >
+          <span className="text-tan text-[1.2em]">&ldquo;</span>
+          {business.mission.quote}
+          <span className="text-tan text-[1.2em]">&rdquo;</span>
+        </blockquote>
+        <p className="mt-12 font-mono text-xs uppercase tracking-[0.2em] text-tan">
+          {`— ${business.mission.attribution}`}
+        </p>
+      </div>
+    </section>
+
     {/* Services Overview — array-driven grid of the six core services */}
     <section aria-label="Our services" className="bg-cream py-16 sm:py-20 lg:py-24">
       <div className="mx-auto max-w-7xl px-6 sm:px-10">
         {/* Heading block */}
         <div className="mb-12 lg:mb-16">
           <p className="font-mono text-xs uppercase tracking-[0.2em] text-tan">
-            02 · OUR SERVICES
+            03 · OUR SERVICES
           </p>
           <h2
             className="mt-6 font-serif text-4xl font-semibold text-navy sm:text-5xl"
@@ -138,7 +159,7 @@ export default function Home() {
       <div className="mx-auto max-w-7xl px-6 sm:px-10">
         {/* Editorial eyebrow */}
         <p className="mb-6 font-mono text-xs uppercase tracking-[0.2em] text-tan">
-          03 · ALSO HANDLED
+          04 · ALSO HANDLED
         </p>
 
         {/* Intro line — intentionally smaller than the main Services Overview heading */}
@@ -170,12 +191,87 @@ export default function Home() {
       </div>
     </section>
 
+    {/* About teaser — asymmetric cream, photo on LEFT, text on RIGHT (inverse of hero) */}
+    <section aria-label="About teaser" className="bg-cream py-20 sm:py-24 lg:py-28">
+      <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 px-6 sm:px-10 lg:grid-cols-[1fr_1.15fr] lg:gap-16">
+        {/* Left column — documentary photo placeholder (real photo to come) */}
+        <div
+          aria-hidden="true"
+          className="aspect-square w-full rounded-lg bg-charcoal"
+        />
+
+        {/* Right column — eyebrow, headline, body, link */}
+        <div className="flex flex-col">
+          <div className="mb-6 flex items-center gap-4">
+            <p className="font-mono text-xs uppercase tracking-[0.2em] text-tan">
+              05 · ABOUT US
+            </p>
+            <div aria-hidden="true" className="h-px flex-1 bg-tan" />
+          </div>
+          <h2
+            className="font-serif text-3xl font-semibold leading-tight text-navy sm:text-4xl lg:text-5xl"
+            style={{ fontVariationSettings: "'opsz' 144, 'SOFT' 50" }}
+          >
+            Family-owned. Forty years strong.
+          </h2>
+          <p className="mt-8 mb-8 max-w-md font-sans text-lg leading-relaxed text-navy/90">
+            Patriot Plumbing started in 1983 as one plumber&apos;s commitment to
+            doing the work right. Today, it&apos;s a family operation — a father,
+            a daughter, and her husband — still rooted in Stockdale.
+          </p>
+          <a
+            href="/about"
+            className="group inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.2em] text-navy hover:text-rust transition-colors"
+          >
+            Read our story
+            <span
+              aria-hidden="true"
+              className="transition-transform duration-300 ease-out group-hover:translate-x-1"
+            >
+              →
+            </span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    {/* Work teaser — centered cream, no cards */}
+    <section aria-label="Work teaser" className="bg-cream py-20 sm:py-24">
+      <div className="mx-auto max-w-3xl px-6 text-center sm:px-10">
+        <p className="mb-6 font-mono text-xs uppercase tracking-[0.2em] text-tan">
+          06 · OUR WORK
+        </p>
+        <h2
+          className="mb-6 font-serif text-3xl font-semibold text-navy sm:text-4xl lg:text-5xl"
+          style={{ fontVariationSettings: "'opsz' 144, 'SOFT' 50" }}
+        >
+          A record, kept in writing.
+        </h2>
+        <p className="mb-8 font-sans text-lg leading-relaxed text-navy/90 sm:text-xl">
+          We&apos;re building a public record of the jobs we do — so future
+          clients can see what they&apos;re getting before they call.
+        </p>
+        <a
+          href="/work"
+          className="group inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.2em] text-navy hover:text-rust transition-colors"
+        >
+          See our work
+          <span
+            aria-hidden="true"
+            className="transition-transform duration-300 ease-out group-hover:translate-x-1"
+          >
+            →
+          </span>
+        </a>
+      </div>
+    </section>
+
     {/* Final CTA — closing call-to-action driving phone calls */}
     <section aria-label="Get in touch" className="bg-cream py-20 sm:py-24 lg:py-28">
       <div className="mx-auto max-w-3xl px-6 text-center sm:px-10">
         {/* Editorial eyebrow */}
         <p className="mb-6 font-mono text-xs uppercase tracking-[0.2em] text-tan">
-          04 · GET IN TOUCH
+          07 · GET IN TOUCH
         </p>
 
         {/* Headline */}
