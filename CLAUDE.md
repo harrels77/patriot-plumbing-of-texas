@@ -54,7 +54,7 @@ The brand voice is humble, hardworking, and rooted in community. The business is
 
 ## Brand Positioning — The 40-Year Story
 
-The business is a **multi-generational family operation** with 40+ years serving Wilson County. This is the heart of the brand and must be reflected everywhere — especially on the About page, which is structured as an editorial profile rather than a corporate "team" page. The transmission of the craft across generations is the central narrative. The phrase "three generations" or "40 years" should appear in key conversion moments (Home, About, Footer).
+The business is a **family-owned, family-run plumbing operation** with forty years of work serving Wilson County. This is the heart of the brand and must be reflected everywhere — especially on the About page, which is structured as an editorial profile rather than a corporate "team" page. The About page mission is centered on the family's own words about building something lasting. The brand claim — always stated in terms of "forty years" and "family-owned," never as a generational claim — should appear at key conversion moments (Home hero, About, Footer). The Home hero claim is "Honest plumbing. Forty years."
 
 ## Theme & Visual Identity
 

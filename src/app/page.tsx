@@ -32,7 +32,7 @@ export default function Home() {
             className="font-serif text-5xl font-semibold leading-[1.05] tracking-tight text-navy sm:text-6xl lg:text-7xl"
             style={{ fontVariationSettings: "'opsz' 144, 'SOFT' 50" }}
           >
-            Honest plumbing. Three generations.
+            Honest plumbing. Forty years.
           </h1>
         </div>
 

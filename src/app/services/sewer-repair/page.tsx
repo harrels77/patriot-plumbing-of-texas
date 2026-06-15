@@ -93,7 +93,7 @@ export default function SewerRepairPage() {
         eyebrow="05 · WHY US"
         title="Why Patriot Plumbing"
         body={
-          "Forty years in Wilson County. Three generations of plumbers in the same family. We pick up the phone, we show up on time, and we stand behind every install with a written warranty.\n\nThat's the whole pitch."
+          "Forty years in Wilson County. Family-owned, family-run. We pick up the phone, we show up on time, and we stand behind every install with a written warranty.\n\nThat's the whole pitch."
         }
         aboutHref="/about"
       />
