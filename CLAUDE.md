@@ -109,7 +109,7 @@ The business is a **family-owned, family-run plumbing operation** with forty yea
 - **Headquarters**: 202 Cannon Lane, Stockdale, TX 78160
 - **Phone**: (210) 857-1727
 - **Hours**: Monday–Friday, 8:00 AM – 5:00 PM. Closed weekends.
-- **Experience**: 40+ years, multi-generational family business
+- **Experience**: 40+ years, family-owned and family-run business
 - **Languages**: English and Spanish
 
 ## Geographic Scope
