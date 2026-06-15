@@ -137,7 +137,7 @@ MVP page list:
 - Contact
 - 404
 
-There is no dedicated Reviews page. Social proof on the Home is reframed as "Three Generations of Trust" until real Google Reviews exist.
+There is no dedicated Reviews page. Social proof on the Home is reframed as "Forty Years of Trust" until real Google Reviews exist.
 
 ## Wow Features
 
