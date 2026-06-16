@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { Service } from "@/types/service";
 import { serviceAreas } from "@/data/service-areas";
 
@@ -17,6 +18,13 @@ export default function Footer({ services }: FooterProps) {
             <p className="mb-6 font-mono text-xs uppercase tracking-[0.2em] text-tan">
               CONTACT
             </p>
+            <Image
+              src="/logo/patriot-cream.svg"
+              alt="Patriot Plumbing of Texas logo"
+              width={80}
+              height={80}
+              className="mb-4 h-20 w-20"
+            />
             <p className="mb-4 font-serif text-lg text-cream">
               Patriot Plumbing of Texas, LLC
             </p>

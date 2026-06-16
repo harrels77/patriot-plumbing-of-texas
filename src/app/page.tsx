@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Footer from "@/components/Footer";
 import { services } from "@/data/services";
 import { business } from "@/data/business";
@@ -62,11 +63,16 @@ export default function Home() {
         </p>
       </div>
 
-      {/* Right column — photo placeholder (real documentary photo to come) */}
-      <div
-        aria-hidden="true"
-        className="h-64 w-full rounded-xl bg-charcoal sm:h-96 lg:h-[70vh]"
-      />
+      {/* Right column — brand logo, centered within the column */}
+      <div className="flex items-center justify-center">
+        <Image
+          src="/logo/patriot-color.svg"
+          alt="Patriot Plumbing of Texas logo"
+          width={600}
+          height={600}
+          className="mx-auto h-auto w-3/5 max-w-md"
+        />
+      </div>
     </section>
 
     {/* Mission encart — rupture navy, the family's mission statement */}

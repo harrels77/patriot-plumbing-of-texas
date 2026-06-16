@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { business } from "@/data/business";
 
@@ -8,13 +9,21 @@ export default function SiteNav() {
       className="sticky top-0 z-50 border-b border-tan/30 bg-cream/95 backdrop-blur-sm"
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-4 sm:px-10">
-        {/* Brand name — links to home */}
-        <Link
-          href="/"
-          className="font-serif text-xl font-semibold text-navy sm:text-2xl"
-          style={{ fontVariationSettings: "'opsz' 96, 'SOFT' 50" }}
-        >
-          Patriot Plumbing of TX
+        {/* Brand — logo + wordmark, links to home */}
+        <Link href="/" className="inline-flex items-center gap-3">
+          <Image
+            src="/logo/patriot-mono.svg"
+            alt="Patriot Plumbing logo"
+            width={40}
+            height={40}
+            className="h-10 w-10"
+          />
+          <span
+            className="hidden font-serif text-xl font-semibold text-navy sm:inline sm:text-2xl"
+            style={{ fontVariationSettings: "'opsz' 96, 'SOFT' 50" }}
+          >
+            Patriot Plumbing
+          </span>
         </Link>
 
         {/* Right cluster — nav links + CTA */}
