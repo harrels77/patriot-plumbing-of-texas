@@ -149,6 +149,30 @@ There is no dedicated Reviews page. Social proof on the Home is reframed as "For
 - Live "available now" indicator
 - Real-time technician tracking (WebSockets)
 
+## Phase 0 — Visual Triage Assistant (in progress)
+
+### Spec files (read these before working on the agent)
+- `PHASE-0-BUILD-SPEC.md` — architecture, milestones J0–J5, technical details
+- `PHASE-0-EVALS.md` — the eval cases that define "correct". These are FIXED targets written by Simon. NEVER generate, modify, or grade against self-written tests — build TOWARD the eval file, re-run after every change.
+
+### Hard constraints (the agent must NEVER break these)
+- Service area is the 9 cities in `src/data/service-areas.ts` (Stockdale, Sutherland Springs, Floresville, La Vernia, Geronimo, McQueeney, Seguin, San Marcos, New Braunfels). The agent's served-city list MUST be imported from that data module, never hardcoded separately. If outside the area, politely decline and do not book.
+- Hours: Monday–Friday 8am–5pm. Closed weekends. NEVER claim 24/7 emergency service.
+- NEVER quote a price, range, or estimate. Redirect: the technician assesses on site.
+- NEVER use the word "cheap"; never sell on price.
+- No religious or political statements.
+- Bilingual EN/ES — always reply in the language the customer writes in.
+- Phone shown to customers: (210) 857-1727 (matches the site, until reveal day).
+- Tone: honest, family-owned, forty years. Never "three generations".
+
+### Models
+- Conversation/intake: `claude-haiku-4-5-20251001` (fast, cheap)
+- Photo diagnosis (J3): `claude-sonnet-4-6` (more precise)
+- All Anthropic calls go through a Next.js API route server-side. The API key NEVER reaches the client. Use direct fetch to https://api.anthropic.com/v1/messages (no SDK), consistent with the rest of this project.
+
+### Cost guardrail
+- Anthropic console monthly cap is set to $20. A budget-guard pattern (cache-first, cap, disable flag) protects against photo-spam draining tokens.
+
 ## File Reading Order
 
 This file is structured so that the most important context comes first. If only the first 50 lines are read, Claude Code should still understand: (1) what the project is, (2) the unbreakable rules, (3) the tech stack. Everything below provides depth.
