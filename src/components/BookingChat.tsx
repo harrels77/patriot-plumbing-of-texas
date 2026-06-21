@@ -12,7 +12,7 @@ type ChatMessage = {
 const GREETING: ChatMessage = {
   role: "assistant",
   content:
-    "Hi — I'm here to help you schedule a visit with Patriot Plumbing. What's going on with your plumbing? (Se habla español.)",
+    "Hi, I'm Alan with Patriot Plumbing. I can help you get a visit scheduled — what's going on with your plumbing? (Se habla español.)",
 };
 
 const SNAG_REPLY = "Sorry, we hit a snag. Please call us at (210) 857-1727.";
