@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="400" viewBox="0 0 680 400" role="img">
+<title>Drain cleaning emblem</title>
+<desc>A line-art P-trap pipe with a rust auger coil feeding into the inlet, labeled drain cleaning.</desc>
+
+<rect x="0" y="0" width="680" height="400" fill="#F5F1E8"/>
+
+<path d="M305 96 L305 225 Q305 256 335 256 L350 256 Q380 256 380 225 L380 178 L428 178" fill="none" stroke="#1B2A3C" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="295" y="86" width="20" height="10" rx="2" fill="#1B2A3C"/>
+
+<path d="M305 58 C322 63 322 76 305 81 C288 86 288 99 305 104 C322 109 322 122 305 127" fill="none" stroke="#A8323A" stroke-width="4" stroke-linecap="round"/>
+
+<line x1="312" y1="322" x2="368" y2="322" stroke="#A8323A" stroke-width="2.5"/>
+<text x="340" y="356" text-anchor="middle" font-family="'Courier New', monospace" font-size="21" fill="#1B2A3C" letter-spacing="4" font-weight="bold">DRAIN CLEANING</text>
+</svg>

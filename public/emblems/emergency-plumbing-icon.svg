@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="280" height="280" viewBox="200 50 280 280" role="img">
+<title>Emergency plumbing emblem</title>
+<desc>A line-art burst pipe with rust water drops spraying out, labeled emergency plumbing.</desc>
+
+<rect x="0" y="0" width="680" height="400" fill="#F5F1E8"/>
+
+<path d="M248 190 L322 190" fill="none" stroke="#1B2A3C" stroke-width="16" stroke-linecap="round"/>
+<path d="M358 190 L432 190" fill="none" stroke="#1B2A3C" stroke-width="16" stroke-linecap="round"/>
+
+<path d="M340 214 C331 227 331 238 340 244 C349 238 349 227 340 214 Z" fill="#A8323A"/>
+<path d="M316 236 C310 245 310 252 316 256 C322 252 322 245 316 236 Z" fill="#A8323A"/>
+<path d="M364 232 C358 241 358 248 364 252 C370 248 370 241 364 232 Z" fill="#A8323A"/>
+<path d="M340 262 C334 270 334 277 340 281 C346 277 346 270 340 262 Z" fill="#A8323A"/>
+
+</svg>

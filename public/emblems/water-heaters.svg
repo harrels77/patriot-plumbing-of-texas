@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="400" viewBox="0 0 680 400" role="img">
+<title>Water heaters emblem</title>
+<desc>A line-art water heater with hot and cold pipes and a rust dial, labeled water heaters.</desc>
+
+<rect x="0" y="0" width="680" height="400" fill="#F5F1E8"/>
+
+<path d="M305 95 L305 60 L268 60" fill="none" stroke="#1B2A3C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M375 95 L375 60 L412 60" fill="none" stroke="#A8323A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+
+<rect x="283" y="95" width="114" height="175" rx="16" fill="#F5F1E8" stroke="#1B2A3C" stroke-width="3.5"/>
+<line x1="283" y1="146" x2="397" y2="146" stroke="#1B2A3C" stroke-width="2.5"/>
+<line x1="283" y1="214" x2="397" y2="214" stroke="#1B2A3C" stroke-width="2.5"/>
+
+<circle cx="340" cy="180" r="14" fill="#A8323A"/>
+<circle cx="340" cy="180" r="14" fill="none" stroke="#1B2A3C" stroke-width="3"/>
+<line x1="340" y1="180" x2="348" y2="173" stroke="#F5F1E8" stroke-width="2.5" stroke-linecap="round"/>
+
+<line x1="305" y1="270" x2="305" y2="288" stroke="#1B2A3C" stroke-width="3" stroke-linecap="round"/>
+<line x1="375" y1="270" x2="375" y2="288" stroke="#1B2A3C" stroke-width="3" stroke-linecap="round"/>
+
+<line x1="312" y1="322" x2="368" y2="322" stroke="#A8323A" stroke-width="2.5"/>
+<text x="340" y="356" text-anchor="middle" font-family="'Courier New', monospace" font-size="21" fill="#1B2A3C" letter-spacing="4" font-weight="bold">WATER HEATERS</text>
+</svg>

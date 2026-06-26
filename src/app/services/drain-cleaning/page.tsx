@@ -18,6 +18,7 @@ export default function DrainCleaningPage() {
   return (
     <>
       <ServicePageHero
+        slug="drain-cleaning"
         eyebrow="SERVICES · 03"
         title="Drains, cleared right."
         subtitle="Slow sinks, blocked toilets, mainline backups. We clear them without tearing up your home."

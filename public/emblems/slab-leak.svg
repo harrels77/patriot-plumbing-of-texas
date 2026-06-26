@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="400" viewBox="0 0 680 400" role="img">
+<title>Slab leak emblem</title>
+<desc>A line-art concrete slab with a crack, a water line beneath it, and a rust leak drop, labeled slab leak.</desc>
+
+<rect x="0" y="0" width="680" height="400" fill="#F5F1E8"/>
+
+<rect x="255" y="148" width="170" height="44" fill="#F5F1E8" stroke="#1B2A3C" stroke-width="3.5"/>
+<circle cx="292" cy="170" r="2.5" fill="#8B6F47"/>
+<circle cx="345" cy="162" r="2.5" fill="#8B6F47"/>
+<circle cx="392" cy="176" r="2.5" fill="#8B6F47"/>
+
+<path d="M340 148 L333 161 L345 174 L336 187 L341 192" fill="none" stroke="#1B2A3C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+
+<path d="M255 224 L425 224" fill="none" stroke="#1B2A3C" stroke-width="12" stroke-linecap="round"/>
+
+<path d="M340 196 C332 207 332 215 340 219 C348 215 348 207 340 196 Z" fill="#A8323A"/>
+<path d="M340 232 C336 239 336 244 340 247 C344 244 344 239 340 232 Z" fill="#A8323A"/>
+
+<line x1="312" y1="322" x2="368" y2="322" stroke="#A8323A" stroke-width="2.5"/>
+<text x="340" y="356" text-anchor="middle" font-family="'Courier New', monospace" font-size="21" fill="#1B2A3C" letter-spacing="4" font-weight="bold">SLAB LEAK</text>
+</svg>

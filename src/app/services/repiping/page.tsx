@@ -18,6 +18,7 @@ export default function RepipingPage() {
   return (
     <>
       <ServicePageHero
+        slug="repiping"
         eyebrow="SERVICES · 04"
         title="Repiping, done right the first time."
         subtitle="Whole-house or partial. Copper, PEX. We replace old or failing plumbing in a way that lasts another forty years."

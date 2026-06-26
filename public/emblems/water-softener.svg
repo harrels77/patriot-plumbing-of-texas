@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="400" viewBox="0 0 680 400" role="img">
+<title>Water softener emblem</title>
+<desc>A line-art water softener tank with a control head and salt crystals, one of them rust, labeled water softener.</desc>
+
+<rect x="0" y="0" width="680" height="400" fill="#F5F1E8"/>
+
+<path d="M312 100 L312 82" fill="none" stroke="#1B2A3C" stroke-width="5" stroke-linecap="round"/>
+<path d="M368 100 L368 82" fill="none" stroke="#1B2A3C" stroke-width="5" stroke-linecap="round"/>
+
+<rect x="298" y="100" width="84" height="24" rx="5" fill="#1B2A3C"/>
+<circle cx="340" cy="112" r="7" fill="#F5F1E8"/>
+
+<rect x="290" y="124" width="100" height="156" rx="14" fill="#F5F1E8" stroke="#1B2A3C" stroke-width="3.5"/>
+
+<path d="M296 212 Q312 206 328 212 Q344 218 360 212 Q376 206 384 212" fill="none" stroke="#1B2A3C" stroke-width="2.5"/>
+
+<path d="M318 226 L324 232 L318 238 L312 232 Z" fill="#F5F1E8" stroke="#1B2A3C" stroke-width="2"/>
+<path d="M362 226 L368 232 L362 238 L356 232 Z" fill="#F5F1E8" stroke="#1B2A3C" stroke-width="2"/>
+<path d="M328 252 L334 258 L328 264 L322 258 Z" fill="#F5F1E8" stroke="#1B2A3C" stroke-width="2"/>
+<path d="M352 252 L358 258 L352 264 L346 258 Z" fill="#F5F1E8" stroke="#1B2A3C" stroke-width="2"/>
+<path d="M340 240 L347 247 L340 254 L333 247 Z" fill="#A8323A"/>
+
+<line x1="312" y1="322" x2="368" y2="322" stroke="#A8323A" stroke-width="2.5"/>
+<text x="340" y="356" text-anchor="middle" font-family="'Courier New', monospace" font-size="21" fill="#1B2A3C" letter-spacing="4" font-weight="bold">WATER SOFTENER</text>
+</svg>

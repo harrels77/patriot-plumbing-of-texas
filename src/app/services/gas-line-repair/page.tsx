@@ -18,6 +18,7 @@ export default function GasLineRepairPage() {
   return (
     <>
       <ServicePageHero
+        slug="gas-line-repair"
         eyebrow="SERVICES · 09"
         title="Gas lines, done with care."
         subtitle="Gas leaks are no joke. We repair, replace, and install gas lines with the right permits, the right materials, and a calm head."

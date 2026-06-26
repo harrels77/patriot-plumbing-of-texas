@@ -18,6 +18,7 @@ export default function CommercialPlumbingPage() {
   return (
     <>
       <ServicePageHero
+        slug="commercial-plumbing"
         eyebrow="SERVICES · 06"
         title="Commercial plumbing, on your schedule."
         subtitle="Restaurants, offices, multi-unit buildings. Maintenance contracts and emergency repair, scoped for businesses."

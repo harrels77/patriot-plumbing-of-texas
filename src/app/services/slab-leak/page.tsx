@@ -18,6 +18,7 @@ export default function SlabLeakPage() {
   return (
     <>
       <ServicePageHero
+        slug="slab-leak"
         eyebrow="SERVICES · 07"
         title="Slab leaks, found and fixed."
         subtitle="Hidden leaks under your foundation are a real problem in Texas. We find them, fix them, and protect your slab from worse damage."

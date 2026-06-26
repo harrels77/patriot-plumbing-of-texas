@@ -18,6 +18,7 @@ export default function EmergencyPlumbingPage() {
   return (
     <>
       <ServicePageHero
+        slug="emergency-plumbing"
         eyebrow="SERVICES · 01"
         title="Plumbing emergencies, handled."
         subtitle="Burst pipes, major leaks, no water. We respond fast during business hours, Monday through Friday."

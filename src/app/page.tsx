@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Footer from "@/components/Footer";
+import ServiceEmblem from "@/components/ServiceEmblem";
 import { services } from "@/data/services";
 import { business } from "@/data/business";
 
@@ -113,18 +114,23 @@ export default function Home() {
 
         {/* Card grid — rendered by mapping over the services array */}
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 lg:gap-10">
-          {services.map((service) => (
+          {services.map((service) => {
+            // Slug lives in the href (/services/<slug>) — used for the icon emblem.
+            const slug = service.href.replace("/services/", "");
+            return (
             <a
               key={service.number}
               href={service.href}
               aria-label={`Learn more about ${service.title}`}
               className="group flex flex-col gap-6"
             >
-              {/* Photo placeholder — documentary photo to come */}
+              {/* Cream panel hosting the label-less icon emblem (card shows the title) */}
               <div
                 aria-hidden="true"
-                className="aspect-[4/3] w-full rounded-lg bg-charcoal"
-              />
+                className="flex aspect-[4/3] w-full items-center justify-center rounded-lg border border-tan/40 bg-cream p-6"
+              >
+                <ServiceEmblem slug={slug} icon className="w-full max-w-[200px]" />
+              </div>
 
               {/* Section number */}
               <span className="font-mono text-xs uppercase tracking-[0.2em] text-rust">
@@ -155,7 +161,8 @@ export default function Home() {
                 </span>
               </span>
             </a>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

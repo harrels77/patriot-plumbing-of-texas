@@ -18,6 +18,7 @@ export default function WaterSoftenerPage() {
   return (
     <>
       <ServicePageHero
+        slug="water-softener"
         eyebrow="SERVICES · 08"
         title="Soft water, for good."
         subtitle="Texas hard water ruins fixtures and dries out skin. We install and service water softeners that make your whole home better."

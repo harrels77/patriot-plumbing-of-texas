@@ -18,6 +18,7 @@ export default function WaterHeatersPage() {
   return (
     <>
       <ServicePageHero
+        slug="water-heaters"
         eyebrow="SERVICES · 02"
         title="Water heaters, done right."
         subtitle="Tank or tankless. New installs, repairs, replacements. We've worked on every model that's come through Wilson County since 1983."

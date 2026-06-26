@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="400" viewBox="0 0 680 400" role="img">
+<title>Gas line repair emblem</title>
+<desc>A line-art gas pipe with a ball valve and lever handle, plus a rust flame, labeled gas line repair.</desc>
+
+<rect x="0" y="0" width="680" height="400" fill="#F5F1E8"/>
+
+<path d="M255 205 L425 205" fill="none" stroke="#1B2A3C" stroke-width="16" stroke-linecap="round"/>
+<circle cx="340" cy="205" r="24" fill="#F5F1E8" stroke="#1B2A3C" stroke-width="3.5"/>
+
+<rect x="336" y="182" width="8" height="20" fill="#1B2A3C"/>
+<rect x="312" y="168" width="78" height="12" rx="6" fill="#1B2A3C"/>
+<circle cx="351" cy="174" r="4" fill="#F5F1E8"/>
+
+<path d="M399 102 C384 124 396 132 393 146 C392 152 406 152 405 146 C402 132 414 124 399 102 Z" fill="#A8323A"/>
+<path d="M399 118 C393 128 398 133 397 142 C397 145 402 145 401 142 C400 133 405 128 399 118 Z" fill="#F5F1E8"/>
+
+<line x1="312" y1="322" x2="368" y2="322" stroke="#A8323A" stroke-width="2.5"/>
+<text x="340" y="356" text-anchor="middle" font-family="'Courier New', monospace" font-size="21" fill="#1B2A3C" letter-spacing="4" font-weight="bold">GAS LINE REPAIR</text>
+</svg>

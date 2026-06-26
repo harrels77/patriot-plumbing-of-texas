@@ -18,6 +18,7 @@ export default function SewerRepairPage() {
   return (
     <>
       <ServicePageHero
+        slug="sewer-repair"
         eyebrow="SERVICES · 05"
         title="Sewer lines, repaired or replaced."
         subtitle="Trenchless and traditional methods. We protect your yard and your sanity — most jobs done without tearing up the lawn."

@@ -2,13 +2,17 @@
 // Mirrors the home hero's asymmetric editorial layout, but slightly shorter
 // (70vh vs 85vh) so it reads as a section header rather than a landing splash.
 
+import ServiceEmblem from "@/components/ServiceEmblem";
+
 type ServicePageHeroProps = {
+  slug: string;
   eyebrow: string;
   title: string;
   subtitle: string;
 };
 
 export default function ServicePageHero({
+  slug,
   eyebrow,
   title,
   subtitle,
@@ -54,11 +58,13 @@ export default function ServicePageHero({
         </a>
       </div>
 
-      {/* Right column — documentary photo placeholder (real photo to come) */}
+      {/* Right column — cream panel hosting the full service emblem (with label) */}
       <div
         aria-hidden="true"
-        className="h-64 w-full rounded-lg bg-charcoal sm:h-96 lg:h-[70vh]"
-      />
+        className="flex h-64 w-full items-center justify-center rounded-lg border border-tan/40 bg-cream p-8 sm:h-96 lg:h-[70vh]"
+      >
+        <ServiceEmblem slug={slug} className="w-full max-w-[460px]" />
+      </div>
     </section>
   );
 }

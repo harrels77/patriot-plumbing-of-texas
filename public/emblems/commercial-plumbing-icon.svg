@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="280" height="280" viewBox="200 50 280 280" role="img">
+<title>Commercial plumbing emblem</title>
+<desc>A line-art commercial building with windows, a water riser pipe, and a rust valve handwheel, labeled commercial plumbing.</desc>
+
+<rect x="0" y="0" width="680" height="400" fill="#F5F1E8"/>
+
+<rect x="262" y="96" width="156" height="12" fill="#1B2A3C"/>
+<rect x="268" y="108" width="144" height="182" fill="#F5F1E8" stroke="#1B2A3C" stroke-width="3.5"/>
+
+<rect x="288" y="128" width="22" height="22" fill="#F5F1E8" stroke="#1B2A3C" stroke-width="2.5"/>
+<rect x="322" y="128" width="22" height="22" fill="#F5F1E8" stroke="#1B2A3C" stroke-width="2.5"/>
+<rect x="288" y="170" width="22" height="22" fill="#F5F1E8" stroke="#1B2A3C" stroke-width="2.5"/>
+<rect x="322" y="170" width="22" height="22" fill="#F5F1E8" stroke="#1B2A3C" stroke-width="2.5"/>
+<rect x="288" y="212" width="22" height="22" fill="#F5F1E8" stroke="#1B2A3C" stroke-width="2.5"/>
+<rect x="322" y="212" width="22" height="22" fill="#F5F1E8" stroke="#1B2A3C" stroke-width="2.5"/>
+
+<line x1="380" y1="112" x2="380" y2="286" stroke="#1B2A3C" stroke-width="6" stroke-linecap="round"/>
+<line x1="380" y1="152" x2="356" y2="152" stroke="#1B2A3C" stroke-width="4" stroke-linecap="round"/>
+<line x1="380" y1="224" x2="356" y2="224" stroke="#1B2A3C" stroke-width="4" stroke-linecap="round"/>
+
+<circle cx="380" cy="188" r="13" fill="none" stroke="#A8323A" stroke-width="3.5"/>
+<line x1="367" y1="188" x2="393" y2="188" stroke="#A8323A" stroke-width="2.5"/>
+<line x1="380" y1="175" x2="380" y2="201" stroke="#A8323A" stroke-width="2.5"/>
+<circle cx="380" cy="188" r="3" fill="#A8323A"/>
+
+<rect x="326" y="255" width="28" height="35" fill="#1B2A3C"/>
+
+</svg>
