@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { serviceAreas } from "@/data/service-areas";
-import { upsertLead } from "@/lib/leads";
+import { upsertLead, saveDiagnosis, saveDiagnosisBySession } from "@/lib/leads";
+import { diagnosePhoto } from "@/lib/diagnose";
+import { businessTimeContext } from "@/lib/clock";
 
 // The conversation turns exchanged with the browser. Only user and assistant
 // messages travel over the wire — the system prompt is added server-side below
@@ -17,10 +19,10 @@ interface ToolUseBlock {
   input: { phone: string; name?: string; city?: string; problem?: string; urgency?: string; language?: string };
 }
 
-async function runTool(block: ToolUseBlock) {
+async function runTool(block: ToolUseBlock, sessionId?: string) {
   if (block.name === "upsert_lead") {
     try {
-      const { returning, lead } = await upsertLead(block.input);
+      const { returning, lead } = await upsertLead({ ...block.input, sessionId });
       return { returning, name: lead.name, city: lead.city, problem: lead.problem };
     } catch {
       return { error: "Could not save the record right now." };
@@ -81,7 +83,7 @@ const TOOLS = [
   },
 ];
 
-async function callAnthropic(messages: unknown[], apiKey: string) {
+async function callAnthropic(messages: unknown[], apiKey: string, extraSystem = "") {
   const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: {
@@ -92,7 +94,7 @@ async function callAnthropic(messages: unknown[], apiKey: string) {
     body: JSON.stringify({
       model: "claude-haiku-4-5-20251001",
       max_tokens: 1024,
-      system: SYSTEM_PROMPT,
+      system: SYSTEM_PROMPT + extraSystem,
       tools: TOOLS,
       messages,
     }),
@@ -102,11 +104,42 @@ async function callAnthropic(messages: unknown[], apiKey: string) {
 
 export async function POST(request: Request) {
   try {
-    const { messages } = (await request.json()) as { messages: ChatMessage[] };
+    const { messages, photo, phone, sessionId } = (await request.json()) as {
+      messages: ChatMessage[];
+      photo?: { base64: string; mediaType: string };
+      phone?: string;
+      sessionId?: string;
+    };
 
     const apiKey = process.env.ANTHROPIC_API_KEY;
     if (!apiKey) {
       return NextResponse.json({ error: "Server not configured" }, { status: 500 });
+    }
+
+    // Give Alan a real clock (Central time) — he must never guess the date/time
+    // or whether the shop is open. Injected via the existing extraSystem param.
+    const timeContext = businessTimeContext();
+
+    // If the customer attached a photo, diagnose it ONCE for the plumber. The
+    // result is stored on the lead and fed to Alan as hidden context only — it
+    // is NEVER returned to the customer or shown in the transcript.
+    let diagnosisContext = "";
+    if (photo?.base64) {
+      const diag = await diagnosePhoto(photo.base64, photo.mediaType || "image/jpeg");
+      if (!("error" in diag)) {
+        // Store for the plumber. Prefer the session anchor (works even before a
+        // phone is known); fall back to phone for the legacy path.
+        try {
+          if (sessionId) {
+            await saveDiagnosisBySession(sessionId, diag);
+          } else if (phone) {
+            await saveDiagnosis(phone, diag);
+          }
+        } catch {}
+        // Hidden context for Alan — NEVER to be shown verbatim to the customer.
+        diagnosisContext =
+          `\n\n[INTERNAL — NOT FOR THE CUSTOMER] The customer attached a photo. Our system analyzed it for the plumber: ${JSON.stringify(diag)}. Do NOT share these details, parts, confidence, or any diagnosis with the customer. To the customer, briefly and warmly acknowledge that you received the photo and that it helps our technician prepare. Then continue collecting any details still needed (name, phone, city, problem) or confirm next steps.`;
+      }
     }
 
     // Working history for this turn. May accumulate tool_use / tool_result
@@ -115,7 +148,7 @@ export async function POST(request: Request) {
 
     // Up to 5 hops: model may call upsert_lead, get a result, then respond.
     for (let i = 0; i < 5; i++) {
-      const data = await callAnthropic(working, apiKey);
+      const data = await callAnthropic(working, apiKey, timeContext + diagnosisContext);
 
       if (data.stop_reason === "tool_use") {
         // Record the assistant turn (includes the tool_use blocks).
@@ -125,7 +158,7 @@ export async function POST(request: Request) {
         const toolResults = [];
         for (const block of data.content as Array<ToolUseBlock | { type: string }>) {
           if (block.type === "tool_use") {
-            const result = await runTool(block as ToolUseBlock);
+            const result = await runTool(block as ToolUseBlock, sessionId);
             toolResults.push({
               type: "tool_result",
               tool_use_id: (block as ToolUseBlock).id,

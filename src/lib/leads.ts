@@ -4,6 +4,7 @@ import { supabase } from "./supabase";
 export interface Lead {
   id: string;
   created_at: string;
+  session_id: string | null;
   phone: string;
   name: string | null;
   city: string | null;
@@ -17,9 +18,11 @@ export interface Lead {
   booking_event_id: string | null;
 }
 
-// The fields a conversation can provide about a lead.
+// The fields a conversation can provide about a lead. A conversation is anchored
+// by sessionId; phone may arrive later (or be looked up for a returning customer).
 export interface LeadInput {
-  phone: string;
+  sessionId?: string;
+  phone?: string;
   name?: string;
   city?: string;
   problem?: string;
@@ -39,21 +42,16 @@ export interface UpsertResult {
   lead: Lead;
 }
 
-// Search by normalized phone, then branch:
-//   - exists  → returning customer; update last_contact and merge any NEW
-//               non-empty fields (never overwrite existing data with blanks)
-//   - missing → new customer; insert
-// Phone is the UNIQUE key, so this can never create a duplicate.
+// Anchor a conversation by sessionId so data collected before the phone is known
+// is still stored, then promoted/merged when the phone arrives. Branches:
+//   - No sessionId (legacy): pure phone upsert (find by phone → update-or-insert).
+//   - sessionId, no phone yet: anonymous upsert against the session row.
+//   - sessionId + phone: promote the session row, or merge into an existing phone
+//     lead (returning customer) and delete the session row — never a duplicate.
 export async function upsertLead(input: LeadInput): Promise<UpsertResult> {
-  const phone = normPhone(input.phone);
+  const sessionId = input.sessionId?.trim() || "";
+  const phone = input.phone ? normPhone(input.phone) : "";
 
-  const { data: existing } = await supabase
-    .from("leads")
-    .select("*")
-    .eq("phone", phone)
-    .maybeSingle();
-
-  // Build a patch of only the provided, non-empty fields.
   const patch: Record<string, string> = {};
   if (input.name && input.name.trim()) patch.name = input.name.trim();
   if (input.city && input.city.trim()) patch.city = normCity(input.city);
@@ -61,22 +59,96 @@ export async function upsertLead(input: LeadInput): Promise<UpsertResult> {
   if (input.urgency && input.urgency.trim()) patch.urgency = input.urgency.trim();
   if (input.language && input.language.trim()) patch.language = input.language.trim();
 
-  if (existing) {
-    const { data: updated, error } = await supabase
-      .from("leads")
-      .update({ ...patch, last_contact: new Date().toISOString() })
-      .eq("id", existing.id)
-      .select("*")
-      .single();
+  const now = () => new Date().toISOString();
+
+  // --- Legacy path: no session anchor → pure phone upsert (back-compat) ---
+  if (!sessionId) {
+    if (!phone) throw new Error("upsertLead requires a sessionId or a phone");
+    const { data: existing } = await supabase.from("leads").select("*").eq("phone", phone).maybeSingle();
+    if (existing) {
+      const { data: updated, error } = await supabase.from("leads")
+        .update({ ...patch, last_contact: now() }).eq("id", existing.id).select("*").single();
+      if (error) throw error;
+      return { returning: true, lead: updated as Lead };
+    }
+    const { data: inserted, error } = await supabase.from("leads")
+      .insert({ phone, ...patch }).select("*").single();
     if (error) throw error;
-    return { returning: true, lead: updated as Lead };
+    return { returning: false, lead: inserted as Lead };
   }
 
-  const { data: inserted, error } = await supabase
-    .from("leads")
-    .insert({ phone, ...patch })
-    .select("*")
-    .single();
+  // --- Session path ---
+  const { data: bySession } = await supabase.from("leads").select("*").eq("session_id", sessionId).maybeSingle();
+
+  if (phone) {
+    const { data: byPhone } = await supabase.from("leads").select("*").eq("phone", phone).maybeSingle();
+
+    // Existing identified lead for this phone, on a different row → merge + dedup.
+    if (byPhone && (!bySession || byPhone.id !== bySession.id)) {
+      const merged: Record<string, unknown> = { ...patch, last_contact: now() };
+      if (bySession) {
+        for (const k of ["name", "city", "problem", "urgency", "language"] as const) {
+          if (!byPhone[k] && bySession[k]) merged[k] = bySession[k];
+        }
+        if (!byPhone.last_diagnosis && bySession.last_diagnosis) merged.last_diagnosis = bySession.last_diagnosis;
+        await supabase.from("leads").delete().eq("id", bySession.id);
+      }
+      const { data: updated, error } = await supabase.from("leads")
+        .update(merged).eq("id", byPhone.id).select("*").single();
+      if (error) throw error;
+      return { returning: true, lead: updated as Lead };
+    }
+
+    // Promote the existing session row with the phone, or insert a new identified row.
+    if (bySession) {
+      const { data: updated, error } = await supabase.from("leads")
+        .update({ ...patch, phone, last_contact: now() }).eq("id", bySession.id).select("*").single();
+      if (error) throw error;
+      return { returning: false, lead: updated as Lead };
+    }
+    const { data: inserted, error } = await supabase.from("leads")
+      .insert({ session_id: sessionId, phone, ...patch }).select("*").single();
+    if (error) throw error;
+    return { returning: false, lead: inserted as Lead };
+  }
+
+  // No phone yet → anonymous upsert by session.
+  if (bySession) {
+    const { data: updated, error } = await supabase.from("leads")
+      .update({ ...patch, last_contact: now() }).eq("id", bySession.id).select("*").single();
+    if (error) throw error;
+    return { returning: false, lead: updated as Lead };
+  }
+  const { data: inserted, error } = await supabase.from("leads")
+    .insert({ session_id: sessionId, ...patch }).select("*").single();
   if (error) throw error;
   return { returning: false, lead: inserted as Lead };
+}
+
+// Save the photo diagnosis JSON onto an existing lead row, keyed by phone.
+// The diagnosis is for the plumber only — it is stored, never returned to the
+// customer. If no row matches that phone yet, the update is a no-op, which is
+// fine: the diagnosis still reaches the plumber via this turn's chat context.
+export async function saveDiagnosis(phone: string, diagnosis: unknown): Promise<void> {
+  const p = normPhone(phone);
+  if (!p) return;
+  await supabase
+    .from("leads")
+    .update({ last_diagnosis: diagnosis, last_contact: new Date().toISOString() })
+    .eq("phone", p);
+}
+
+// Save the photo diagnosis against the conversation's session row, creating
+// the row if needed — so the diagnosis is stored even before a phone is known.
+export async function saveDiagnosisBySession(sessionId: string, diagnosis: unknown): Promise<void> {
+  const s = sessionId?.trim();
+  if (!s) return;
+  const { data: bySession } = await supabase.from("leads").select("id").eq("session_id", s).maybeSingle();
+  if (bySession) {
+    await supabase.from("leads")
+      .update({ last_diagnosis: diagnosis, last_contact: new Date().toISOString() })
+      .eq("id", bySession.id);
+  } else {
+    await supabase.from("leads").insert({ session_id: s, last_diagnosis: diagnosis });
+  }
 }
