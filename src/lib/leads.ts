@@ -152,3 +152,22 @@ export async function saveDiagnosisBySession(sessionId: string, diagnosis: unkno
     await supabase.from("leads").insert({ session_id: s, last_diagnosis: diagnosis });
   }
 }
+
+// Store a confirmed booking on the lead: the Google Calendar event id and a
+// "booked" status. Prefer the session anchor (works even before a phone is on
+// file); fall back to phone. A no-op if neither matches an existing row.
+export async function saveBooking(sessionId: string | undefined, phone: string | undefined, eventId: string): Promise<void> {
+  if (sessionId) {
+    const { data } = await supabase.from("leads").select("id").eq("session_id", sessionId).maybeSingle();
+    if (data) {
+      await supabase.from("leads").update({ booking_event_id: eventId, status: "booked", last_contact: new Date().toISOString() }).eq("id", data.id);
+      return;
+    }
+  }
+  if (phone) {
+    const p = normPhone(phone);
+    if (p) {
+      await supabase.from("leads").update({ booking_event_id: eventId, status: "booked", last_contact: new Date().toISOString() }).eq("phone", p);
+    }
+  }
+}

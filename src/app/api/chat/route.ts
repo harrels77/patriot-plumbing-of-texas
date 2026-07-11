@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
 import { serviceAreas } from "@/data/service-areas";
-import { upsertLead, saveDiagnosis, saveDiagnosisBySession } from "@/lib/leads";
+import { upsertLead, saveDiagnosis, saveDiagnosisBySession, saveBooking } from "@/lib/leads";
 import { diagnosePhoto } from "@/lib/diagnose";
 import { businessTimeContext } from "@/lib/clock";
+import { getAvailableSlots, validateSlot } from "@/lib/slots";
+import { createEvent } from "@/lib/calendar";
 
 // The conversation turns exchanged with the browser. Only user and assistant
 // messages travel over the wire — the system prompt is added server-side below
@@ -19,13 +21,44 @@ interface ToolUseBlock {
   input: { phone: string; name?: string; city?: string; problem?: string; urgency?: string; language?: string };
 }
 
-async function runTool(block: ToolUseBlock, sessionId?: string) {
+async function runTool(
+  block: ToolUseBlock,
+  sessionId?: string,
+  bodyPhone?: string,
+) {
   if (block.name === "upsert_lead") {
     try {
-      const { returning, lead } = await upsertLead({ ...block.input, sessionId });
+      const { returning, lead } = await upsertLead({ ...(block.input as object), sessionId });
       return { returning, name: lead.name, city: lead.city, problem: lead.problem };
     } catch {
       return { error: "Could not save the record right now." };
+    }
+  }
+  if (block.name === "propose_slots") {
+    try {
+      const slots = await getAvailableSlots(4);
+      return { slots: slots.map((s) => ({ id: s.startISO, label: s.label })) };
+    } catch {
+      return { error: "Could not fetch availability right now." };
+    }
+  }
+  if (block.name === "book_slot") {
+    try {
+      const input = block.input as { startISO: string; name?: string; phone?: string; city?: string; problem?: string };
+      const slot = await validateSlot(input.startISO);
+      if (!slot) return { error: "That time isn't available. Please offer the customer a fresh set of slots from propose_slots." };
+      const summary = `Plumbing visit — ${input.name || "Customer"}`;
+      const description = [
+        input.name ? `Name: ${input.name}` : "",
+        input.phone ? `Phone: ${input.phone}` : "",
+        input.city ? `City: ${input.city}` : "",
+        input.problem ? `Problem: ${input.problem}` : "",
+      ].filter(Boolean).join("\n");
+      const event = await createEvent({ summary, description, startISO: slot.startISO, endISO: slot.endISO });
+      try { await saveBooking(sessionId, input.phone || bodyPhone, event.id); } catch {}
+      return { booked: true, when: slot.label };
+    } catch {
+      return { error: "Could not complete the booking. Suggest the customer call (210) 857-1727." };
     }
   }
   return { error: "Unknown tool." };
@@ -54,7 +87,7 @@ Hard rules — never break:
 
 If the customer wants to call instead, the number is (210) 857-1727.
 
-Once you have the customer's name, phone number, an in-area city, and a description of the problem, let them know the team will confirm two weekday time options shortly. Do NOT invent specific dates or times — scheduling is handled separately.
+Once you have the customer's name, phone number, an in-area city, and a description of the problem, proceed to scheduling using the booking process described below. Do NOT invent specific dates or times — always use the booking tools.
 
 Returning customers and saving details:
 - As soon as you have the customer's phone number, call the upsert_lead tool with it (plus any details you already have). The tool tells you whether they are a returning customer and what we already have on file.
@@ -71,14 +104,20 @@ Collect roughly in this order, skipping anything the customer has already given:
 2. The city — and confirm it is in our service area.
 3. Urgency — is it an emergency, needed soon, or can it wait.
 4. The customer's name.
-5. The customer's phone number.
+5. The customer's phone number — a complete 10-digit US phone number; if they give fewer than 10 digits, politely ask again.
 6. Optionally, invite a photo if it would help: a photo helps our technician prepare.
-Once you have the problem, an in-area city, a name, and a phone number, let them know the team will confirm two weekday time options shortly, and close warmly.
+Once you have the problem, an in-area city, a name, and a phone number, proceed to booking (see the Booking section): call propose_slots and offer two real options.
 
 Do NOT:
 - Assume the problem is resolved unless the customer explicitly says it is fixed. If they restate or clarify the problem, keep helping — never tell them they are "all set" while a problem still stands.
 - Re-ask for information already provided, or repeatedly loop back to re-confirm the same thing.
-- Recite the full list of service-area cities in every message. Only name specific cities if the customer's location is unclear or appears out of area.`;
+- Recite the full list of service-area cities in every message. Only name specific cities if the customer's location is unclear or appears out of area.
+
+Booking the visit:
+- Only move to scheduling once you have the problem, an in-area city, the customer's name, and a phone number.
+- When ready, call propose_slots, then offer the customer TWO specific options in plain language (for example, two different days/times). Do not show times outside what propose_slots returned, and never invent times.
+- When the customer clearly picks one, call book_slot with that slot's id (its startISO) plus their name, phone, city, and problem. If book_slot returns booked:true, confirm warmly with the exact day and time, and let them know our team will see them then. If it returns an error, apologize briefly and give the phone number (210) 857-1727.
+- Never claim a booking is confirmed unless book_slot returned booked:true.`;
 
 const TOOLS = [
   {
@@ -96,6 +135,28 @@ const TOOLS = [
         language: { type: "string", description: "The language the customer is writing in: en or es." },
       },
       required: ["phone"],
+    },
+  },
+  {
+    name: "propose_slots",
+    description:
+      "Get the next available real appointment slots (Mon-Fri, 3-hour windows, from the next business day). Call this when the customer is ready to schedule and you have their problem, an in-area city, name, and phone. Returns slots with an id (the startISO) and a human label. Offer TWO of them to the customer.",
+    input_schema: { type: "object", properties: {}, required: [] },
+  },
+  {
+    name: "book_slot",
+    description:
+      "Book a specific appointment slot for the customer. Only call this AFTER the customer has clearly chosen one of the proposed slots and you have their name, phone, problem, and in-area city. Pass the chosen slot's startISO exactly as given by propose_slots.",
+    input_schema: {
+      type: "object",
+      properties: {
+        startISO: { type: "string", description: "The chosen slot's startISO, exactly as returned by propose_slots." },
+        name: { type: "string", description: "Customer name." },
+        phone: { type: "string", description: "Customer phone." },
+        city: { type: "string", description: "Customer city (must be in service area)." },
+        problem: { type: "string", description: "Short description of the plumbing problem." },
+      },
+      required: ["startISO"],
     },
   },
 ];
@@ -175,7 +236,7 @@ export async function POST(request: Request) {
         const toolResults = [];
         for (const block of data.content as Array<ToolUseBlock | { type: string }>) {
           if (block.type === "tool_use") {
-            const result = await runTool(block as ToolUseBlock, sessionId);
+            const result = await runTool(block as ToolUseBlock, sessionId, phone);
             toolResults.push({
               type: "tool_result",
               tool_use_id: (block as ToolUseBlock).id,
