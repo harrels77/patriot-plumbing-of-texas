@@ -1,6 +1,45 @@
 import { getBusy, type BusyInterval } from "./calendar";
 
-const TZ_OFFSET = "-05:00"; // America/Chicago, CDT (summer). Acceptable for Phase 0.
+const TZ = "America/Chicago";
+
+// The UTC offset for Central time on a given date, e.g. "-05:00" (CDT) or
+// "-06:00" (CST). Derived from the IANA timezone so daylight saving is handled
+// automatically — never hardcode it.
+function centralOffset(date: Date): string {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: TZ,
+    timeZoneName: "longOffset",
+  }).formatToParts(date);
+  const name = parts.find((p) => p.type === "timeZoneName")?.value ?? "GMT-6";
+  // name looks like "GMT-5" or "GMT-05:00" depending on the runtime.
+  const m = name.match(/GMT([+-])(\d{1,2})(?::?(\d{2}))?/);
+  if (!m) return "-06:00";
+  const sign = m[1];
+  const hh = m[2].padStart(2, "0");
+  const mm = (m[3] ?? "00").padStart(2, "0");
+  return `${sign}${hh}:${mm}`;
+}
+
+// Build a Central-time ISO string for a given local Y/M/D and hour, using the
+// correct offset for THAT date (so slots stay correct across a DST change).
+export function centralISO(y: number, m: number, d: number, hour: number): string {
+  const pad = (n: number) => String(n).padStart(2, "0");
+  // Probe the offset using a UTC instant near that local date (noon avoids edges).
+  const probe = new Date(Date.UTC(y, m - 1, d, 12, 0, 0));
+  const off = centralOffset(probe);
+  return `${y}-${pad(m)}-${pad(d)}T${pad(hour)}:00:00${off}`;
+}
+
+// Normalize a datetime string that may be missing its timezone offset (the model
+// sometimes drops it when echoing a slot id back). A bare datetime is treated as
+// Central time, using the correct offset for that date.
+export function normalizeToCentral(startISO: string): string {
+  if (/[zZ]|[+-]\d{2}:\d{2}$/.test(startISO)) return startISO;
+  const m = startISO.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2})/);
+  if (!m) return startISO;
+  const probe = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3], 12, 0, 0));
+  return `${startISO}${centralOffset(probe)}`;
+}
 
 // The two daily slots (start hour, end hour) in 24h Central time.
 const DAILY_SLOTS: Array<{ startHour: number; endHour: number }> = [
@@ -9,7 +48,7 @@ const DAILY_SLOTS: Array<{ startHour: number; endHour: number }> = [
 ];
 
 export interface Slot {
-  startISO: string;   // e.g. 2026-06-29T08:00:00-05:00
+  startISO: string;   // Central-time ISO with the correct offset for that date (CDT/CST)
   endISO: string;
   label: string;      // human label, e.g. "Monday, June 29 · 8:00–11:00 AM"
 }
@@ -23,7 +62,7 @@ function pad(n: number): string {
 }
 
 function isoFor(y: number, m: number, d: number, hour: number): string {
-  return `${y}-${pad(m)}-${pad(d)}T${pad(hour)}:00:00${TZ_OFFSET}`;
+  return centralISO(y, m, d, hour);
 }
 
 // Day-of-week and a readable label in Central time, independent of server TZ.
@@ -91,7 +130,7 @@ export async function validateSlot(startISO: string): Promise<Slot | null> {
   // The model sometimes drops the timezone offset when echoing a slot id back
   // (e.g. "2026-07-17T08:00:00" instead of "2026-07-17T08:00:00-05:00").
   // Treat a bare datetime as Central time rather than rejecting it.
-  const normalized = /[zZ]|[+-]\d{2}:\d{2}$/.test(startISO) ? startISO : `${startISO}${TZ_OFFSET}`;
+  const normalized = normalizeToCentral(startISO);
   const dt = new Date(normalized);
   if (isNaN(dt.getTime())) return null;
   if (dt.getTime() <= Date.now()) return null;
@@ -107,8 +146,8 @@ export async function validateSlot(startISO: string): Promise<Slot | null> {
   const y = parseInt(new Intl.DateTimeFormat("en-US", { timeZone: "America/Chicago", year: "numeric" }).format(dt), 10);
   const mName = new Intl.DateTimeFormat("en-US", { timeZone: "America/Chicago", month: "2-digit" }).format(dt);
   const dNum = new Intl.DateTimeFormat("en-US", { timeZone: "America/Chicago", day: "2-digit" }).format(dt);
-  const realStartISO = `${y}-${mName}-${dNum}T${pad(hour)}:00:00${TZ_OFFSET}`;
-  const realEndISO = `${y}-${mName}-${dNum}T${pad(match.endHour)}:00:00${TZ_OFFSET}`;
+  const realStartISO = centralISO(y, parseInt(mName, 10), parseInt(dNum, 10), hour);
+  const realEndISO = centralISO(y, parseInt(mName, 10), parseInt(dNum, 10), match.endHour);
 
   const busy = await getBusy(realStartISO, realEndISO);
   if (overlapsBusy(realStartISO, realEndISO, busy)) return null;

@@ -4,7 +4,7 @@ import { upsertLead, saveDiagnosis, saveDiagnosisBySession, saveBooking, getDiag
 import { sendBookingAlert, sendCustomerPhoto } from "@/lib/telegram";
 import { diagnosePhoto } from "@/lib/diagnose";
 import { businessTimeContext } from "@/lib/clock";
-import { getAvailableSlots, validateSlot } from "@/lib/slots";
+import { getAvailableSlots, validateSlot, normalizeToCentral } from "@/lib/slots";
 import { createEvent } from "@/lib/calendar";
 
 // The conversation turns exchanged with the browser. Only user and assistant
@@ -50,9 +50,7 @@ async function runTool(
       // catches invented times the model may have hallucinated. Compare by
       // instant, so a missing timezone offset does not cause a false mismatch.
       const available = await getAvailableSlots(6);
-      const wanted = new Date(
-        /[zZ]|[+-]\d{2}:\d{2}$/.test(input.startISO) ? input.startISO : `${input.startISO}-05:00`,
-      ).getTime();
+      const wanted = new Date(normalizeToCentral(input.startISO)).getTime();
       const match = available.find((s) => new Date(s.startISO).getTime() === wanted);
       if (!match) {
         console.error(
