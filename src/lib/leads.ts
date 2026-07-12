@@ -153,6 +153,23 @@ export async function saveDiagnosisBySession(sessionId: string, diagnosis: unkno
   }
 }
 
+// Fetch the photo diagnosis stored for this conversation, so the plumber's
+// alert can include it. Returns null if none.
+export async function getDiagnosis(sessionId?: string, phone?: string): Promise<unknown | null> {
+  if (sessionId) {
+    const { data } = await supabase.from("leads").select("last_diagnosis").eq("session_id", sessionId).maybeSingle();
+    if (data?.last_diagnosis) return data.last_diagnosis;
+  }
+  if (phone) {
+    const p = normPhone(phone);
+    if (p) {
+      const { data } = await supabase.from("leads").select("last_diagnosis").eq("phone", p).maybeSingle();
+      if (data?.last_diagnosis) return data.last_diagnosis;
+    }
+  }
+  return null;
+}
+
 // Store a confirmed booking on the lead: the Google Calendar event id and a
 // "booked" status. Prefer the session anchor (works even before a phone is on
 // file); fall back to phone. A no-op if neither matches an existing row.

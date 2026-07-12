@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { serviceAreas } from "@/data/service-areas";
-import { upsertLead, saveDiagnosis, saveDiagnosisBySession, saveBooking } from "@/lib/leads";
+import { upsertLead, saveDiagnosis, saveDiagnosisBySession, saveBooking, getDiagnosis } from "@/lib/leads";
+import { sendBookingAlert } from "@/lib/telegram";
 import { diagnosePhoto } from "@/lib/diagnose";
 import { businessTimeContext } from "@/lib/clock";
 import { getAvailableSlots, validateSlot } from "@/lib/slots";
@@ -56,6 +57,20 @@ async function runTool(
       ].filter(Boolean).join("\n");
       const event = await createEvent({ summary, description, startISO: slot.startISO, endISO: slot.endISO });
       try { await saveBooking(sessionId, input.phone || bodyPhone, event.id); } catch {}
+
+      // Alert the plumber. A Telegram failure must never break a confirmed booking.
+      try {
+        const diagnosis = await getDiagnosis(sessionId, input.phone || bodyPhone);
+        await sendBookingAlert({
+          name: input.name,
+          phone: input.phone || bodyPhone,
+          city: input.city,
+          problem: input.problem,
+          when: slot.label,
+          diagnosis: diagnosis ?? undefined,
+        });
+      } catch {}
+
       return { booked: true, when: slot.label };
     } catch {
       return { error: "Could not complete the booking. Suggest the customer call (210) 857-1727." };
