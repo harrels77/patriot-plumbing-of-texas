@@ -90,7 +90,10 @@ export async function upsertLead(input: LeadInput): Promise<UpsertResult> {
         for (const k of ["name", "city", "problem", "urgency", "language"] as const) {
           if (!byPhone[k] && bySession[k]) merged[k] = bySession[k];
         }
-        if (!byPhone.last_diagnosis && bySession.last_diagnosis) merged.last_diagnosis = bySession.last_diagnosis;
+        // The diagnosis must reflect THIS conversation. If the current session
+        // produced one, it wins. If it did not, clear any diagnosis left over
+        // from a previous visit so the plumber never sees a stale one.
+        merged.last_diagnosis = bySession.last_diagnosis ?? null;
         await supabase.from("leads").delete().eq("id", bySession.id);
       }
       const { data: updated, error } = await supabase.from("leads")
@@ -153,21 +156,18 @@ export async function saveDiagnosisBySession(sessionId: string, diagnosis: unkno
   }
 }
 
-// Fetch the photo diagnosis stored for this conversation, so the plumber's
-// alert can include it. Returns null if none.
-export async function getDiagnosis(sessionId?: string, phone?: string): Promise<unknown | null> {
-  if (sessionId) {
-    const { data } = await supabase.from("leads").select("last_diagnosis").eq("session_id", sessionId).maybeSingle();
-    if (data?.last_diagnosis) return data.last_diagnosis;
-  }
-  if (phone) {
-    const p = normPhone(phone);
-    if (p) {
-      const { data } = await supabase.from("leads").select("last_diagnosis").eq("phone", p).maybeSingle();
-      if (data?.last_diagnosis) return data.last_diagnosis;
-    }
-  }
-  return null;
+// Fetch the photo diagnosis for THIS conversation only. Deliberately does NOT
+// fall back to phone: a diagnosis from a previous visit must never be attached
+// to a new booking where the customer sent no photo — the plumber would load
+// parts for the wrong job.
+export async function getDiagnosis(sessionId?: string): Promise<unknown | null> {
+  if (!sessionId) return null;
+  const { data } = await supabase
+    .from("leads")
+    .select("last_diagnosis")
+    .eq("session_id", sessionId)
+    .maybeSingle();
+  return data?.last_diagnosis ?? null;
 }
 
 // Store a confirmed booking on the lead: the Google Calendar event id and a

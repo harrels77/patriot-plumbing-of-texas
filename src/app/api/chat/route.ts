@@ -89,7 +89,7 @@ async function runTool(
 
       // Alert the plumber. A Telegram failure must never break a confirmed booking.
       try {
-        const diagnosis = await getDiagnosis(sessionId, input.phone || bodyPhone);
+        const diagnosis = await getDiagnosis(sessionId);
         await sendBookingAlert({
           name: input.name,
           phone: input.phone || bodyPhone,
