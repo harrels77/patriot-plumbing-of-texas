@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { serviceAreas } from "@/data/service-areas";
 import { upsertLead, saveDiagnosis, saveDiagnosisBySession, saveBooking, getDiagnosis } from "@/lib/leads";
-import { sendBookingAlert } from "@/lib/telegram";
+import { sendBookingAlert, sendCustomerPhoto } from "@/lib/telegram";
 import { diagnosePhoto } from "@/lib/diagnose";
 import { businessTimeContext } from "@/lib/clock";
 import { getAvailableSlots, validateSlot } from "@/lib/slots";
@@ -229,6 +229,11 @@ export async function POST(request: Request) {
           } else if (phone) {
             await saveDiagnosis(phone, diag);
           }
+        } catch {}
+        // Send the actual photo to the plumber right away, with a short caption.
+        // Fire-and-forget: never let a Telegram failure break the conversation.
+        try {
+          await sendCustomerPhoto(photo.base64, photo.mediaType || "image/jpeg", diag);
         } catch {}
         // Hidden context for Alan — NEVER to be shown verbatim to the customer.
         diagnosisContext =

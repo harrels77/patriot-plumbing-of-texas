@@ -72,3 +72,56 @@ export async function sendBookingAlert(alert: BookingAlert): Promise<boolean> {
     return false;
   }
 }
+
+// Send the customer's photo to the plumber, with a short diagnosis caption.
+// Fired when the photo arrives, before booking. Never throws — a Telegram
+// failure must never break the conversation.
+export async function sendCustomerPhoto(base64: string, mediaType: string, diagnosis?: unknown): Promise<boolean> {
+  const token = process.env.TELEGRAM_BOT_TOKEN;
+  const chatId = process.env.TELEGRAM_CHAT_ID;
+  if (!token || !chatId) return false;
+
+  // Build a compact caption (Telegram captions are limited to 1024 characters).
+  const d = diagnosis as
+    | { fixture?: string; confidence?: string; likely_issues?: string[]; parts_to_bring?: string[] }
+    | undefined;
+  const lines: string[] = ["<b>Customer photo — Patriot Plumbing</b>"];
+  if (d && typeof d === "object") {
+    if (d.fixture) lines.push(`<b>Fixture:</b> ${esc(d.fixture)}`);
+    if (d.confidence) lines.push(`<b>Confidence:</b> ${esc(d.confidence)}`);
+    if (d.likely_issues?.length) {
+      lines.push("<b>Check:</b>");
+      for (const i of d.likely_issues.slice(0, 3)) lines.push(`• ${esc(i)}`);
+    }
+    if (d.parts_to_bring?.length) {
+      lines.push("<b>Bring:</b>");
+      for (const p of d.parts_to_bring.slice(0, 4)) lines.push(`• ${esc(p)}`);
+    }
+    lines.push("");
+    lines.push("Full details will follow if they book.");
+  } else {
+    lines.push("(No diagnosis available for this photo.)");
+  }
+  let caption = lines.join("\n");
+  if (caption.length > 1000) caption = caption.slice(0, 997) + "...";
+
+  try {
+    // Telegram sendPhoto expects multipart/form-data for an uploaded file.
+    const bytes = Buffer.from(base64, "base64");
+    const ext = mediaType.includes("png") ? "png" : "jpg";
+    const form = new FormData();
+    form.append("chat_id", chatId);
+    form.append("caption", caption);
+    form.append("parse_mode", "HTML");
+    form.append("photo", new Blob([bytes], { type: mediaType }), `photo.${ext}`);
+
+    const res = await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
+      method: "POST",
+      body: form,
+    });
+    const data = await res.json();
+    return data.ok === true;
+  } catch {
+    return false;
+  }
+}
