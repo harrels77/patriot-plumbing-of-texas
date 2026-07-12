@@ -88,7 +88,11 @@ export async function getAvailableSlots(count = 4, lookAheadDays = 10): Promise<
 // two daily start hours, in the future) AND still free. Returns the matching Slot
 // or null.
 export async function validateSlot(startISO: string): Promise<Slot | null> {
-  const dt = new Date(startISO);
+  // The model sometimes drops the timezone offset when echoing a slot id back
+  // (e.g. "2026-07-17T08:00:00" instead of "2026-07-17T08:00:00-05:00").
+  // Treat a bare datetime as Central time rather than rejecting it.
+  const normalized = /[zZ]|[+-]\d{2}:\d{2}$/.test(startISO) ? startISO : `${startISO}${TZ_OFFSET}`;
+  const dt = new Date(normalized);
   if (isNaN(dt.getTime())) return null;
   if (dt.getTime() <= Date.now()) return null;
 

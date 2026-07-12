@@ -46,10 +46,36 @@ async function runTool(
   if (block.name === "book_slot") {
     try {
       const input = block.input as { startISO: string; name?: string; phone?: string; city?: string; problem?: string };
-      const slot = await validateSlot(input.startISO);
+      // Guard: only book a slot that is genuinely available right now. This also
+      // catches invented times the model may have hallucinated. Compare by
+      // instant, so a missing timezone offset does not cause a false mismatch.
+      const available = await getAvailableSlots(6);
+      const wanted = new Date(
+        /[zZ]|[+-]\d{2}:\d{2}$/.test(input.startISO) ? input.startISO : `${input.startISO}-05:00`,
+      ).getTime();
+      const match = available.find((s) => new Date(s.startISO).getTime() === wanted);
+      if (!match) {
+        console.error(
+          "book_slot: requested slot is not among available slots.",
+          "requested:", input.startISO,
+          "available:", available.map((s) => s.startISO).join(", "),
+        );
+        return {
+          booked: false,
+          error: "NOT_AVAILABLE",
+          message: "That exact time is not on the list of available slots. Do NOT tell the customer it is booked. Call propose_slots again and offer only the returned options, using their id values exactly as given.",
+          available: available.slice(0, 4).map((s) => ({ id: s.startISO, label: s.label })),
+        };
+      }
+
+      const slot = await validateSlot(match.startISO);
       if (!slot) {
-        console.error("book_slot: validateSlot rejected startISO:", input.startISO);
-        return { error: "That time isn't available. Please offer the customer a fresh set of slots from propose_slots." };
+        console.error("book_slot: validateSlot rejected startISO:", match.startISO);
+        return {
+          booked: false,
+          error: "NOT_AVAILABLE",
+          message: "That time just became unavailable. Do NOT tell the customer it is booked. Call propose_slots again and offer fresh options.",
+        };
       }
       const summary = `Plumbing visit — ${input.name || "Customer"}`;
       const description = [
@@ -77,7 +103,11 @@ async function runTool(
       return { booked: true, when: slot.label };
     } catch (e) {
       console.error("book_slot failed:", e);
-      return { error: "Could not complete the booking. Suggest the customer call (210) 857-1727." };
+      return {
+        booked: false,
+        error: "BOOKING_FAILED",
+        message: "The booking did NOT go through. Do NOT tell the customer it is confirmed. Apologize briefly and ask them to call (210) 857-1727 so the team can lock in the time.",
+      };
     }
   }
   return { error: "Unknown tool." };
@@ -135,8 +165,8 @@ Do NOT:
 
 Booking the visit:
 - Only move to scheduling once you have the problem, an in-area city, the customer's name, and a phone number.
-- When ready, call propose_slots, then offer the customer TWO specific options in plain language (for example, two different days/times). Do not show times outside what propose_slots returned, and never invent times.
-- When the customer clearly picks one, call book_slot with that slot's id (its startISO) plus their name, phone, city, and problem. If book_slot returns booked:true, confirm warmly with the exact day and time, and let them know our team will see them then. If it returns an error, apologize briefly and give the phone number (210) 857-1727.
+- When ready, ALWAYS call propose_slots first. Never state any appointment time that did not come from a propose_slots result — do not guess, do not invent, do not reuse times from earlier in the conversation. Offer the customer TWO of the returned options in plain language.
+- When the customer clearly picks one, call book_slot passing that slot's id EXACTLY as propose_slots returned it — copy the full id string character for character, including its timezone offset. Do not reformat, shorten, or retype it from memory. Also pass their name, phone, city, and problem. If book_slot returns booked:true, confirm warmly with the exact day and time, and let them know our team will see them then. If it returns an error, apologize briefly and give the phone number (210) 857-1727.
 - CRITICAL: Never tell the customer an appointment is confirmed, set, or booked unless book_slot actually returned booked:true. If book_slot returns an error, or if you did not call book_slot at all, you must NOT say the visit is confirmed. Instead, apologize briefly, explain we could not lock in that time right now, and ask them to call (210) 857-1727 so the team can confirm it directly. A false confirmation means a customer waits for a plumber who never comes — never do this.`;
 
 const TOOLS = [
