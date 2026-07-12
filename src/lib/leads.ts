@@ -85,15 +85,18 @@ export async function upsertLead(input: LeadInput): Promise<UpsertResult> {
 
     // Existing identified lead for this phone, on a different row → merge + dedup.
     if (byPhone && (!bySession || byPhone.id !== bySession.id)) {
-      const merged: Record<string, unknown> = { ...patch, last_contact: now() };
+      // Carry this conversation's session onto the returning customer's row,
+      // so a diagnosis captured in THIS session is still found at booking time.
+      const merged: Record<string, unknown> = { ...patch, session_id: sessionId, last_contact: now() };
+      // The diagnosis must reflect THIS conversation. If the current session
+      // produced one, it wins. If it did not — including when no session row
+      // exists at all — clear any diagnosis left over from a previous visit so
+      // the plumber never sees a stale one.
+      merged.last_diagnosis = bySession?.last_diagnosis ?? null;
       if (bySession) {
         for (const k of ["name", "city", "problem", "urgency", "language"] as const) {
           if (!byPhone[k] && bySession[k]) merged[k] = bySession[k];
         }
-        // The diagnosis must reflect THIS conversation. If the current session
-        // produced one, it wins. If it did not, clear any diagnosis left over
-        // from a previous visit so the plumber never sees a stale one.
-        merged.last_diagnosis = bySession.last_diagnosis ?? null;
         await supabase.from("leads").delete().eq("id", bySession.id);
       }
       const { data: updated, error } = await supabase.from("leads")
