@@ -47,7 +47,10 @@ async function runTool(
     try {
       const input = block.input as { startISO: string; name?: string; phone?: string; city?: string; problem?: string };
       const slot = await validateSlot(input.startISO);
-      if (!slot) return { error: "That time isn't available. Please offer the customer a fresh set of slots from propose_slots." };
+      if (!slot) {
+        console.error("book_slot: validateSlot rejected startISO:", input.startISO);
+        return { error: "That time isn't available. Please offer the customer a fresh set of slots from propose_slots." };
+      }
       const summary = `Plumbing visit — ${input.name || "Customer"}`;
       const description = [
         input.name ? `Name: ${input.name}` : "",
@@ -72,7 +75,8 @@ async function runTool(
       } catch {}
 
       return { booked: true, when: slot.label };
-    } catch {
+    } catch (e) {
+      console.error("book_slot failed:", e);
       return { error: "Could not complete the booking. Suggest the customer call (210) 857-1727." };
     }
   }
@@ -133,7 +137,7 @@ Booking the visit:
 - Only move to scheduling once you have the problem, an in-area city, the customer's name, and a phone number.
 - When ready, call propose_slots, then offer the customer TWO specific options in plain language (for example, two different days/times). Do not show times outside what propose_slots returned, and never invent times.
 - When the customer clearly picks one, call book_slot with that slot's id (its startISO) plus their name, phone, city, and problem. If book_slot returns booked:true, confirm warmly with the exact day and time, and let them know our team will see them then. If it returns an error, apologize briefly and give the phone number (210) 857-1727.
-- Never claim a booking is confirmed unless book_slot returned booked:true.`;
+- CRITICAL: Never tell the customer an appointment is confirmed, set, or booked unless book_slot actually returned booked:true. If book_slot returns an error, or if you did not call book_slot at all, you must NOT say the visit is confirmed. Instead, apologize briefly, explain we could not lock in that time right now, and ask them to call (210) 857-1727 so the team can confirm it directly. A false confirmation means a customer waits for a plumber who never comes — never do this.`;
 
 const TOOLS = [
   {

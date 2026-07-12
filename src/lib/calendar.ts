@@ -90,6 +90,9 @@ export async function createEvent(args: {
     },
   );
   const data = await res.json();
-  if (!data.id) throw new Error("Calendar createEvent error: " + JSON.stringify(data));
+  if (!data.id) {
+    console.error("Calendar createEvent failed. Status:", res.status, "Body:", JSON.stringify(data));
+    throw new Error("Calendar createEvent error: " + JSON.stringify(data));
+  }
   return { id: data.id, htmlLink: data.htmlLink };
 }
