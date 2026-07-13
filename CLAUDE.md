@@ -22,6 +22,8 @@ This file is the single source of truth for the Patriot Plumbing of Texas projec
 - Write commit messages using Conventional Commits format: `feat:`, `fix:`, `chore:`, `docs:`, `refactor:`, `style:`.
 - Use documentary-style photography (real Patriot Plumbing technicians, real Texas environments, golden-hour lighting). When real photos are not yet available, use charcoal rectangle placeholders (bg-charcoal) — documented in KNOWN-LIMITATIONS.md.
 - Reference the real business hours (Mon–Fri 8AM–5PM, closed weekends) everywhere availability is mentioned.
+- Use next/link for internal navigation. Raw `<a>` is only for `tel:` and external URLs.
+- Keep every page reachable from the nav and/or footer, and listed in `src/app/sitemap.ts`. (Both /book and /contact shipped as orphan pages once — never again.)
 
 **Never:**
 - Use any color outside the Warm Heritage palette (Cream, Navy, Rust Red, Charcoal, Tan).
@@ -31,7 +33,7 @@ This file is the single source of truth for the Patriot Plumbing of Texas projec
 - Include explicit religious references (God, prayer, faith, Bible verses) or political content on the site. The family's values are expressed through behavior and tone, not statements.
 - Use the word "cheap" or pricing-based selling. Emphasize honest work and quality instead.
 - Add features, libraries, or integrations not listed in the Tech Stack section without prior discussion.
-- Implement Resend or any email-sending integration in the MVP. The contact form sends NO email: it POSTs to `/api/contact`, which saves the lead to Supabase (deduped by phone — the same `leads` table Alan uses) and alerts the plumber on Telegram. The phone number remains the primary contact path until the email backend is unblocked.
+- Implement Resend or any email-sending integration in the MVP. The contact form sends NO email: it POSTs to `/api/contact`, which saves the lead to Supabase (deduped by phone — the same `leads` table Alan uses) and alerts the plumber on Telegram. Only name and phone are required (email is optional). The phone number remains the primary contact path until the email backend is unblocked.
 
 ## Tech Stack
 
