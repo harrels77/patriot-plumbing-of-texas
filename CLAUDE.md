@@ -31,7 +31,7 @@ This file is the single source of truth for the Patriot Plumbing of Texas projec
 - Include explicit religious references (God, prayer, faith, Bible verses) or political content on the site. The family's values are expressed through behavior and tone, not statements.
 - Use the word "cheap" or pricing-based selling. Emphasize honest work and quality instead.
 - Add features, libraries, or integrations not listed in the Tech Stack section without prior discussion.
-- Implement Resend or any email-sending integration in the MVP. The contact form should exist as UI only, with a disabled or "coming soon" state on the submit button. Use the phone number as the primary contact path (the /book chat is the secondary online path) until the email backend is unblocked.
+- Implement Resend or any email-sending integration in the MVP. The contact form sends NO email: it POSTs to `/api/contact`, which saves the lead to Supabase (deduped by phone — the same `leads` table Alan uses) and alerts the plumber on Telegram. The phone number remains the primary contact path until the email backend is unblocked.
 
 ## Tech Stack
 
@@ -182,6 +182,7 @@ There is no dedicated Reviews page. Social proof on the Home is reframed as "For
 - Payload guards: photo base64 capped at ~3 MB, conversations capped at 60 messages.
 - Rate limiting (`src/lib/ratelimit.ts`, Supabase table `rate_limits`, fixed-window): 15 messages/min and 60 messages/hour per IP; photos (expensive Sonnet vision calls) capped at 3/hour per session and 5/hour per IP.
 - All limits FAIL OPEN if the database is down — a blocked assistant is worse than a cost risk. Limit responses are HTTP 200 with a friendly `reply` (the chat UI expects that shape).
+- `/api/contact` (the contact form endpoint) is rate-limited too: 5 submissions/hour per IP — it writes to the database and pings Telegram, so it must not be bot-farmable.
 
 ### Resilience (a lead must never be silently lost)
 - Every Supabase call in `src/lib/leads.ts` checks its `{ error }` and throws — the Supabase client does NOT throw on its own, so unchecked errors would fail silently.

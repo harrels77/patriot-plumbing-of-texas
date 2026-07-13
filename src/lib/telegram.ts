@@ -165,3 +165,42 @@ export async function sendLeadFallback(lead: LeadFallback): Promise<boolean> {
     return false;
   }
 }
+
+// Alert the plumber when someone submits the contact form.
+export interface ContactAlert {
+  name: string;
+  phone: string;
+  email?: string;
+  service?: string;
+  message?: string;
+}
+
+export async function sendContactAlert(c: ContactAlert): Promise<boolean> {
+  const token = process.env.TELEGRAM_BOT_TOKEN;
+  const chatId = process.env.TELEGRAM_CHAT_ID;
+  if (!token || !chatId) return false;
+
+  const lines: string[] = [];
+  lines.push("<b>New message — contact form</b>");
+  lines.push("");
+  lines.push(`<b>Name:</b> ${esc(c.name)}`);
+  lines.push(`<b>Phone:</b> ${esc(c.phone)}`);
+  if (c.email) lines.push(`<b>Email:</b> ${esc(c.email)}`);
+  if (c.service) lines.push(`<b>Service:</b> ${esc(c.service)}`);
+  if (c.message) {
+    lines.push("");
+    lines.push("<b>Message:</b>");
+    lines.push(esc(c.message.slice(0, 1500)));
+  }
+  try {
+    const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ chat_id: chatId, text: lines.join("\n"), parse_mode: "HTML" }),
+    });
+    const data = await res.json();
+    return data.ok === true;
+  } catch {
+    return false;
+  }
+}

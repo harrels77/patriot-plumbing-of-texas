@@ -49,6 +49,12 @@ export default function Footer({ services }: FooterProps) {
             >
               Book Online
             </Link>
+            <Link
+              href="/contact"
+              className="mt-2 block font-sans text-base text-cream/80 transition-colors hover:text-rust"
+            >
+              Contact
+            </Link>
           </div>
 
           {/* Column 2 — Services (reuses the module-scope services array) */}
