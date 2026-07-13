@@ -59,12 +59,12 @@ export default function Footer({ services }: FooterProps) {
             <ul className="list-none space-y-3">
               {services.map((service) => (
                 <li key={service.href}>
-                  <a
+                  <Link
                     href={service.href}
                     className="font-sans text-base text-cream/80 transition-colors hover:text-rust"
                   >
                     {service.title}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>

@@ -130,22 +130,26 @@ The region is described as "South-Central Texas" in the copyright and other broa
 
 ## Pages on the Website
 
-MVP page list:
+Pages currently live:
 - Home
-- Services Overview
-- Six individual service pages: Emergency Plumbing (reframed for business-hours response), Water Heaters, Drain Cleaning, Repiping, Sewer Repair, Commercial Plumbing
-- Service Areas (with interactive Mapbox map)
+- Nine individual service pages: Emergency Plumbing (reframed for business-hours response), Water Heaters, Drain Cleaning, Repiping, Sewer Repair, Commercial Plumbing, Slab Leak, Water Softener, Gas Line Repair
 - About (editorial 40-year family story)
+- Work — public record of jobs, array-driven from `src/data/projects.ts` (editorial empty state until real projects are added)
+- Book — the Phase 0 booking assistant chat (see Phase 0 section)
 - Contact
 - 404
+
+Planned, not yet built:
+- Services Overview page (`/services`) — until it exists, service pages are reachable only from the home grid and the footer
+- Service Areas page (with the interactive Mapbox map)
 
 There is no dedicated Reviews page. Social proof on the Home is reframed as "Forty Years of Trust" until real Google Reviews exist.
 
 ## Wow Features
 
 **MVP**:
-- Interactive Service Area Map (Mapbox GL JS, custom brand styling, ZIP-code lookup)
-- Bilingual chatbot (EN/ES) powered by Anthropic Claude Haiku 4.5, with rate-limiting and cost caps
+- Bilingual chatbot (EN/ES) powered by Anthropic Claude Haiku 4.5, with rate-limiting and cost caps — LIVE at /book (see Phase 0)
+- Interactive Service Area Map (Mapbox GL JS, custom brand styling, ZIP-code lookup) — planned, not yet built
 
 **V2 (future)**:
 - Live "available now" indicator
@@ -172,8 +176,18 @@ There is no dedicated Reviews page. Social proof on the Home is reframed as "For
 - Photo diagnosis (J3): `claude-sonnet-4-6` (more precise)
 - All Anthropic calls go through a Next.js API route server-side. The API key NEVER reaches the client. Use direct fetch to https://api.anthropic.com/v1/messages (no SDK), consistent with the rest of this project.
 
-### Cost guardrail
-- Anthropic console monthly cap is set to $20. A budget-guard pattern (cache-first, cap, disable flag) protects against photo-spam draining tokens.
+### Cost guardrail (implemented in /api/chat)
+- Anthropic console monthly cap is set to $20.
+- Kill switch: set `CHAT_DISABLED=true` in Vercel to stop all AI calls instantly (friendly reply pointing to the phone).
+- Payload guards: photo base64 capped at ~3 MB, conversations capped at 60 messages.
+- Rate limiting (`src/lib/ratelimit.ts`, Supabase table `rate_limits`, fixed-window): 15 messages/min and 60 messages/hour per IP; photos (expensive Sonnet vision calls) capped at 3/hour per session and 5/hour per IP.
+- All limits FAIL OPEN if the database is down — a blocked assistant is worse than a cost risk. Limit responses are HTTP 200 with a friendly `reply` (the chat UI expects that shape).
+
+### Resilience (a lead must never be silently lost)
+- Every Supabase call in `src/lib/leads.ts` checks its `{ error }` and throws — the Supabase client does NOT throw on its own, so unchecked errors would fail silently.
+- If the database write fails during intake, `sendLeadFallback` (`src/lib/telegram.ts`) sends whatever we know to the plumber on Telegram so a human can follow up.
+- The booking Telegram alert is independent of the diagnosis lookup — a database outage never suppresses it. All Telegram sends are fire-and-forget: they never throw or block the reply.
+- A daily Vercel cron (`vercel.json` → `/api/cron/keep-alive`, 09:00 UTC, read-only, `CRON_SECRET` bearer auth) touches Supabase so the free-tier project never pauses for inactivity.
 
 ## File Reading Order
 

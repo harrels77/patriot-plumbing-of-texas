@@ -119,7 +119,7 @@ export default function Home() {
             // Slug lives in the href (/services/<slug>) — used for the icon emblem.
             const slug = service.href.replace("/services/", "");
             return (
-            <a
+            <Link
               key={service.number}
               href={service.href}
               aria-label={`Learn more about ${service.title}`}
@@ -161,7 +161,7 @@ export default function Home() {
                   →
                 </span>
               </span>
-            </a>
+            </Link>
             );
           })}
         </div>
@@ -233,7 +233,7 @@ export default function Home() {
             doing the work right. Today, it&apos;s a family operation — a father,
             a daughter, and her husband — still rooted in Stockdale.
           </p>
-          <a
+          <Link
             href="/about"
             className="group inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.2em] text-navy hover:text-rust transition-colors"
           >
@@ -244,7 +244,7 @@ export default function Home() {
             >
               →
             </span>
-          </a>
+          </Link>
         </div>
       </div>
     </section>
@@ -265,7 +265,7 @@ export default function Home() {
           We&apos;re building a public record of the jobs we do — so future
           clients can see what they&apos;re getting before they call.
         </p>
-        <a
+        <Link
           href="/work"
           className="group inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.2em] text-navy hover:text-rust transition-colors"
         >
@@ -276,7 +276,7 @@ export default function Home() {
           >
             →
           </span>
-        </a>
+        </Link>
       </div>
     </section>
 
