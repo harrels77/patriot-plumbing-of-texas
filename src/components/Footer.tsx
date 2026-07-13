@@ -43,9 +43,14 @@ export default function Footer({ services }: FooterProps) {
             <p className="font-sans text-sm text-cream/80">
               Mon–Fri · 8 AM – 5 PM
             </p>
+            {/* Quick links — divider sets them apart from the address block above */}
+            <span
+              aria-hidden="true"
+              className="mt-6 block h-px w-16 bg-cream/15"
+            />
             <Link
               href="/book"
-              className="mt-4 block font-sans text-base text-cream/80 transition-colors hover:text-rust"
+              className="mt-6 block font-sans text-base text-cream/80 transition-colors hover:text-rust"
             >
               Book Online
             </Link>
@@ -92,7 +97,14 @@ export default function Footer({ services }: FooterProps) {
         {/* Copyright bar */}
         <div className="border-t border-cream/15" />
         <p className="pt-8 font-sans text-xs text-cream/60 sm:text-sm">
-          © 2026 Patriot Plumbing of Texas, LLC · Serving South-Central Texas
+          © {new Date().getFullYear()} Patriot Plumbing of Texas, LLC · Serving
+          South-Central Texas ·{" "}
+          <Link
+            href="/privacy"
+            className="transition-colors hover:text-rust"
+          >
+            Privacy
+          </Link>
         </p>
       </div>
     </footer>
