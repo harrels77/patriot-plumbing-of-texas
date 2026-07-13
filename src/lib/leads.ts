@@ -64,7 +64,8 @@ export async function upsertLead(input: LeadInput): Promise<UpsertResult> {
   // --- Legacy path: no session anchor → pure phone upsert (back-compat) ---
   if (!sessionId) {
     if (!phone) throw new Error("upsertLead requires a sessionId or a phone");
-    const { data: existing } = await supabase.from("leads").select("*").eq("phone", phone).maybeSingle();
+    const { data: existing, error: existingErr } = await supabase.from("leads").select("*").eq("phone", phone).maybeSingle();
+    if (existingErr) throw existingErr;
     if (existing) {
       const { data: updated, error } = await supabase.from("leads")
         .update({ ...patch, last_contact: now() }).eq("id", existing.id).select("*").single();
@@ -78,10 +79,12 @@ export async function upsertLead(input: LeadInput): Promise<UpsertResult> {
   }
 
   // --- Session path ---
-  const { data: bySession } = await supabase.from("leads").select("*").eq("session_id", sessionId).maybeSingle();
+  const { data: bySession, error: bySessionErr } = await supabase.from("leads").select("*").eq("session_id", sessionId).maybeSingle();
+  if (bySessionErr) throw bySessionErr;
 
   if (phone) {
-    const { data: byPhone } = await supabase.from("leads").select("*").eq("phone", phone).maybeSingle();
+    const { data: byPhone, error: byPhoneErr } = await supabase.from("leads").select("*").eq("phone", phone).maybeSingle();
+    if (byPhoneErr) throw byPhoneErr;
 
     // Existing identified lead for this phone, on a different row → merge + dedup.
     if (byPhone && (!bySession || byPhone.id !== bySession.id)) {
@@ -97,7 +100,8 @@ export async function upsertLead(input: LeadInput): Promise<UpsertResult> {
         for (const k of ["name", "city", "problem", "urgency", "language"] as const) {
           if (!byPhone[k] && bySession[k]) merged[k] = bySession[k];
         }
-        await supabase.from("leads").delete().eq("id", bySession.id);
+        const { error: deleteErr } = await supabase.from("leads").delete().eq("id", bySession.id);
+        if (deleteErr) throw deleteErr;
       }
       const { data: updated, error } = await supabase.from("leads")
         .update(merged).eq("id", byPhone.id).select("*").single();
@@ -138,10 +142,11 @@ export async function upsertLead(input: LeadInput): Promise<UpsertResult> {
 export async function saveDiagnosis(phone: string, diagnosis: unknown): Promise<void> {
   const p = normPhone(phone);
   if (!p) return;
-  await supabase
+  const { error } = await supabase
     .from("leads")
     .update({ last_diagnosis: diagnosis, last_contact: new Date().toISOString() })
     .eq("phone", p);
+  if (error) throw error;
 }
 
 // Save the photo diagnosis against the conversation's session row, creating
@@ -149,13 +154,16 @@ export async function saveDiagnosis(phone: string, diagnosis: unknown): Promise<
 export async function saveDiagnosisBySession(sessionId: string, diagnosis: unknown): Promise<void> {
   const s = sessionId?.trim();
   if (!s) return;
-  const { data: bySession } = await supabase.from("leads").select("id").eq("session_id", s).maybeSingle();
+  const { data: bySession, error: bySessionErr } = await supabase.from("leads").select("id").eq("session_id", s).maybeSingle();
+  if (bySessionErr) throw bySessionErr;
   if (bySession) {
-    await supabase.from("leads")
+    const { error } = await supabase.from("leads")
       .update({ last_diagnosis: diagnosis, last_contact: new Date().toISOString() })
       .eq("id", bySession.id);
+    if (error) throw error;
   } else {
-    await supabase.from("leads").insert({ session_id: s, last_diagnosis: diagnosis });
+    const { error } = await supabase.from("leads").insert({ session_id: s, last_diagnosis: diagnosis });
+    if (error) throw error;
   }
 }
 
@@ -165,11 +173,12 @@ export async function saveDiagnosisBySession(sessionId: string, diagnosis: unkno
 // parts for the wrong job.
 export async function getDiagnosis(sessionId?: string): Promise<unknown | null> {
   if (!sessionId) return null;
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("leads")
     .select("last_diagnosis")
     .eq("session_id", sessionId)
     .maybeSingle();
+  if (error) throw error;
   return data?.last_diagnosis ?? null;
 }
 
@@ -178,16 +187,19 @@ export async function getDiagnosis(sessionId?: string): Promise<unknown | null> 
 // file); fall back to phone. A no-op if neither matches an existing row.
 export async function saveBooking(sessionId: string | undefined, phone: string | undefined, eventId: string): Promise<void> {
   if (sessionId) {
-    const { data } = await supabase.from("leads").select("id").eq("session_id", sessionId).maybeSingle();
+    const { data, error } = await supabase.from("leads").select("id").eq("session_id", sessionId).maybeSingle();
+    if (error) throw error;
     if (data) {
-      await supabase.from("leads").update({ booking_event_id: eventId, status: "booked", last_contact: new Date().toISOString() }).eq("id", data.id);
+      const { error: updateErr } = await supabase.from("leads").update({ booking_event_id: eventId, status: "booked", last_contact: new Date().toISOString() }).eq("id", data.id);
+      if (updateErr) throw updateErr;
       return;
     }
   }
   if (phone) {
     const p = normPhone(phone);
     if (p) {
-      await supabase.from("leads").update({ booking_event_id: eventId, status: "booked", last_contact: new Date().toISOString() }).eq("phone", p);
+      const { error } = await supabase.from("leads").update({ booking_event_id: eventId, status: "booked", last_contact: new Date().toISOString() }).eq("phone", p);
+      if (error) throw error;
     }
   }
 }

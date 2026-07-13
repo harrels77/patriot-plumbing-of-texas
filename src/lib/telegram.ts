@@ -125,3 +125,43 @@ export async function sendCustomerPhoto(base64: string, mediaType: string, diagn
     return false;
   }
 }
+
+// Sent when the database write fails, so a lead is never silently lost.
+// The plumber gets whatever we know, even if nothing was stored.
+export interface LeadFallback {
+  name?: string;
+  phone?: string;
+  city?: string;
+  problem?: string;
+  urgency?: string;
+}
+
+export async function sendLeadFallback(lead: LeadFallback): Promise<boolean> {
+  const token = process.env.TELEGRAM_BOT_TOKEN;
+  const chatId = process.env.TELEGRAM_CHAT_ID;
+  if (!token || !chatId) return false;
+
+  const lines: string[] = [];
+  lines.push("<b>⚠️ Lead — database unavailable</b>");
+  lines.push("Our database did not save this. Here are the details as given:");
+  lines.push("");
+  if (lead.name) lines.push(`<b>Name:</b> ${esc(lead.name)}`);
+  if (lead.phone) lines.push(`<b>Phone:</b> ${esc(lead.phone)}`);
+  if (lead.city) lines.push(`<b>City:</b> ${esc(lead.city)}`);
+  if (lead.problem) lines.push(`<b>Problem:</b> ${esc(lead.problem)}`);
+  if (lead.urgency) lines.push(`<b>Urgency:</b> ${esc(lead.urgency)}`);
+  lines.push("");
+  lines.push("Please follow up manually.");
+
+  try {
+    const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ chat_id: chatId, text: lines.join("\n"), parse_mode: "HTML" }),
+    });
+    const data = await res.json();
+    return data.ok === true;
+  } catch {
+    return false;
+  }
+}

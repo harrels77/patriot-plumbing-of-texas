@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { serviceAreas } from "@/data/service-areas";
 import { upsertLead, saveDiagnosis, saveDiagnosisBySession, saveBooking, getDiagnosis } from "@/lib/leads";
-import { sendBookingAlert, sendCustomerPhoto } from "@/lib/telegram";
+import { sendBookingAlert, sendCustomerPhoto, sendLeadFallback } from "@/lib/telegram";
 import { diagnosePhoto } from "@/lib/diagnose";
 import { businessTimeContext } from "@/lib/clock";
 import { getAvailableSlots, validateSlot, normalizeToCentral } from "@/lib/slots";
@@ -31,8 +31,15 @@ async function runTool(
     try {
       const { returning, lead } = await upsertLead({ ...(block.input as object), sessionId });
       return { returning, name: lead.name, city: lead.city, problem: lead.problem };
-    } catch {
-      return { error: "Could not save the record right now." };
+    } catch (e) {
+      console.error("upsert_lead failed (database unavailable?):", e);
+      // The database is down. Do NOT lose the lead — send it to the plumber
+      // directly so a human can follow up. Fire-and-forget.
+      try {
+        const i = block.input as { name?: string; phone?: string; city?: string; problem?: string; urgency?: string };
+        await sendLeadFallback({ name: i.name, phone: i.phone, city: i.city, problem: i.problem, urgency: i.urgency });
+      } catch {}
+      return { error: "Could not save the record right now, but the details were passed to the team. Continue helping the customer normally." };
     }
   }
   if (block.name === "propose_slots") {
@@ -85,9 +92,16 @@ async function runTool(
       const event = await createEvent({ summary, description, startISO: slot.startISO, endISO: slot.endISO });
       try { await saveBooking(sessionId, input.phone || bodyPhone, event.id); } catch {}
 
+      // Look up the diagnosis, but never let a database outage suppress the alert.
+      let diagnosis: unknown = null;
+      try {
+        diagnosis = await getDiagnosis(sessionId);
+      } catch (e) {
+        console.error("getDiagnosis failed (database unavailable?):", e);
+      }
+
       // Alert the plumber. A Telegram failure must never break a confirmed booking.
       try {
-        const diagnosis = await getDiagnosis(sessionId);
         await sendBookingAlert({
           name: input.name,
           phone: input.phone || bodyPhone,
@@ -263,7 +277,11 @@ export async function POST(request: Request) {
           } else if (phone) {
             await saveDiagnosis(phone, diag);
           }
-        } catch {}
+        } catch (e) {
+          // Database down — the diagnosis still reaches the plumber below via
+          // sendCustomerPhoto, which does not depend on Supabase.
+          console.error("Could not store diagnosis (database unavailable?):", e);
+        }
         // Send the actual photo to the plumber right away, with a short caption.
         // Fire-and-forget: never let a Telegram failure break the conversation.
         try {

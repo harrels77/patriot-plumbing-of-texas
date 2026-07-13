@@ -57,10 +57,6 @@ function ymd(d: Date): { y: number; m: number; d: number } {
   return { y: d.getFullYear(), m: d.getMonth() + 1, d: d.getDate() };
 }
 
-function pad(n: number): string {
-  return String(n).padStart(2, "0");
-}
-
 function isoFor(y: number, m: number, d: number, hour: number): string {
   return centralISO(y, m, d, hour);
 }
