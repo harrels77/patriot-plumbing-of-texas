@@ -31,14 +31,16 @@ This file is the single source of truth for the Patriot Plumbing of Texas projec
 - Include explicit religious references (God, prayer, faith, Bible verses) or political content on the site. The family's values are expressed through behavior and tone, not statements.
 - Use the word "cheap" or pricing-based selling. Emphasize honest work and quality instead.
 - Add features, libraries, or integrations not listed in the Tech Stack section without prior discussion.
-- Implement Resend or any email-sending integration in the MVP. The contact form should exist as UI only, with a disabled or "coming soon" state on the submit button. Use mailto: links and the phone number as primary contact paths until the email backend is unblocked.
+- Implement Resend or any email-sending integration in the MVP. The contact form should exist as UI only, with a disabled or "coming soon" state on the submit button. Use the phone number as the primary contact path (the /book chat is the secondary online path) until the email backend is unblocked.
 
 ## Tech Stack
 
 - **Frontend + Backend**: Next.js 15 (App Router), TypeScript, Tailwind CSS v4
 - **Database**: Supabase (Postgres) — free tier
 - **AI / Chatbot**: Anthropic API, model Claude Haiku 4.5 — called directly, no SDK abstraction layer
-- **Maps**: Mapbox GL JS with custom brand-matched style
+- **Booking calendar**: Google Calendar API via a service account (free/busy lookup + event creation), used by the /book assistant
+- **Plumber notifications**: Telegram Bot API — booking alerts, customer photos, and the database-failure lead fallback
+- **Maps**: Mapbox GL JS with custom brand-matched style (planned — not yet integrated)
 - **Transactional Email**: NONE for MVP. see chat for context
   See KNOWN-LIMITATIONS.md for the why and the unblock plan.
 - **Hosting + CI/CD + CDN + SSL**: Vercel (Hobby tier)

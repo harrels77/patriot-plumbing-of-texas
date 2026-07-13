@@ -6,6 +6,7 @@ import { diagnosePhoto } from "@/lib/diagnose";
 import { businessTimeContext } from "@/lib/clock";
 import { getAvailableSlots, validateSlot, normalizeToCentral } from "@/lib/slots";
 import { createEvent } from "@/lib/calendar";
+import { checkRateLimit } from "@/lib/ratelimit";
 
 // The conversation turns exchanged with the browser. Only user and assistant
 // messages travel over the wire — the system prompt is added server-side below
@@ -245,6 +246,13 @@ async function callAnthropic(messages: unknown[], apiKey: string, extraSystem = 
 }
 
 export async function POST(request: Request) {
+  // Emergency kill switch: set CHAT_DISABLED=true in Vercel to stop all AI calls.
+  if (process.env.CHAT_DISABLED === "true") {
+    return NextResponse.json({
+      reply: "Our online assistant is temporarily unavailable. Please call us at (210) 857-1727 — we'd be glad to help.",
+    });
+  }
+
   try {
     const { messages, photo, phone, sessionId } = (await request.json()) as {
       messages: ChatMessage[];
@@ -253,9 +261,55 @@ export async function POST(request: Request) {
       sessionId?: string;
     };
 
+    // Reject absurd payloads outright (a normal photo is well under 2 MB base64).
+    if (photo?.base64 && photo.base64.length > 3_000_000) {
+      return NextResponse.json({
+        reply: "That image is too large. Could you send a smaller photo, or call us at (210) 857-1727?",
+      });
+    }
+    if (Array.isArray(messages) && messages.length > 60) {
+      return NextResponse.json({
+        reply: "This conversation has gotten long. Please call us at (210) 857-1727 so we can help you directly.",
+      });
+    }
+
     const apiKey = process.env.ANTHROPIC_API_KEY;
     if (!apiKey) {
       return NextResponse.json({ error: "Server not configured" }, { status: 500 });
+    }
+
+    // Identify the caller. Behind Vercel, x-forwarded-for holds the client IP.
+    const ip =
+      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+      request.headers.get("x-real-ip") ||
+      "unknown";
+
+    // Layer 1 — per-IP burst: 15 messages per minute.
+    const burst = await checkRateLimit(`ip:${ip}:min`, 15, 60);
+    if (!burst.allowed) {
+      return NextResponse.json({
+        reply: "You're sending messages a bit fast. Give it a moment, then try again — or call us at (210) 857-1727.",
+      });
+    }
+
+    // Layer 2 — per-IP hourly: 60 messages per hour.
+    const hourly = await checkRateLimit(`ip:${ip}:hour`, 60, 3600);
+    if (!hourly.allowed) {
+      return NextResponse.json({
+        reply: "We've reached the message limit for now. Please call us at (210) 857-1727 and we'll take care of you.",
+      });
+    }
+
+    // Layer 3 — photos are expensive (Sonnet vision). Cap them hard, per session
+    // AND per IP, so a loop cannot drain the budget.
+    if (photo?.base64) {
+      const photoSession = await checkRateLimit(`photo:sess:${sessionId ?? ip}`, 3, 3600);
+      const photoIp = await checkRateLimit(`photo:ip:${ip}`, 5, 3600);
+      if (!photoSession.allowed || !photoIp.allowed) {
+        return NextResponse.json({
+          reply: "Thanks — we've got enough photos for now. Let's get you scheduled, or call us at (210) 857-1727.",
+        });
+      }
     }
 
     // Give Alan a real clock (Central time) — he must never guess the date/time
