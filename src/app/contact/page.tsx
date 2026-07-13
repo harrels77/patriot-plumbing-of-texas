@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import Footer from "@/components/Footer";
 import ContactForm from "@/components/ContactForm";
 import { services } from "@/data/services";
@@ -59,6 +60,17 @@ export default function ContactPage() {
 
           <p className="mb-12 font-sans text-lg text-navy/80">
             {business.hours.display}
+          </p>
+
+          {/* Secondary path — quiet pointer to the online booking chat */}
+          <p className="mb-12 font-sans text-base text-navy/80">
+            Prefer to schedule online?{" "}
+            <Link
+              href="/book"
+              className="font-medium text-navy transition-colors hover:text-rust"
+            >
+              Book a visit
+            </Link>
           </p>
 
           {/* Subtle divider */}

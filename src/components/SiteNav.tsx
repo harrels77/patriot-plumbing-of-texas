@@ -40,6 +40,12 @@ export default function SiteNav() {
           >
             Work
           </Link>
+          <Link
+            href="/book"
+            className="font-mono text-xs uppercase tracking-[0.2em] text-navy transition-colors hover:text-rust"
+          >
+            Book
+          </Link>
           <a
             href={`tel:${business.telephone}`}
             className="inline-flex items-center gap-2 rounded-full bg-rust px-4 py-2 font-mono text-xs uppercase tracking-[0.2em] text-cream transition-colors hover:bg-rust/90"

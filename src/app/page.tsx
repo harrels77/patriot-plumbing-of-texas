@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import Footer from "@/components/Footer";
 import ServiceEmblem from "@/components/ServiceEmblem";
 import { services } from "@/data/services";
@@ -50,12 +51,12 @@ export default function Home() {
           >
             Call (210) 857-1727
           </a>
-          <button
-            type="button"
+          <Link
+            href="/book"
             className="inline-flex items-center justify-center rounded-full border border-navy px-6 py-3 font-sans text-base font-medium text-navy transition-colors hover:bg-navy hover:text-cream"
           >
             Book Online
-          </button>
+          </Link>
         </div>
 
         <p className="font-mono text-xs tracking-tight text-tan sm:text-sm">

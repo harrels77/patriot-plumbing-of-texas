@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import type { Service } from "@/types/service";
 import { serviceAreas } from "@/data/service-areas";
 
@@ -42,6 +43,12 @@ export default function Footer({ services }: FooterProps) {
             <p className="font-sans text-sm text-cream/80">
               Mon–Fri · 8 AM – 5 PM
             </p>
+            <Link
+              href="/book"
+              className="mt-4 block font-sans text-base text-cream/80 transition-colors hover:text-rust"
+            >
+              Book Online
+            </Link>
           </div>
 
           {/* Column 2 — Services (reuses the module-scope services array) */}
