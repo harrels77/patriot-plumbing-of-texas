@@ -1,5 +1,5 @@
 // WhyUsMini — a condensed trust section for service pages, pointing to the
-// full editorial About page. Reinforces the multi-generational family story.
+// full editorial About page. Reinforces the family-owned, forty-years story.
 
 type WhyUsMiniProps = {
   eyebrow: string;

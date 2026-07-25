@@ -134,15 +134,16 @@ The region is described as "South-Central Texas" in the copyright and other broa
 
 Pages currently live:
 - Home
+- Services Overview (`/services`) — array-driven grid of all nine services
 - Nine individual service pages: Emergency Plumbing (reframed for business-hours response), Water Heaters, Drain Cleaning, Repiping, Sewer Repair, Commercial Plumbing, Slab Leak, Water Softener, Gas Line Repair
 - About (editorial 40-year family story)
 - Work — public record of jobs, array-driven from `src/data/projects.ts` (editorial empty state until real projects are added)
 - Book — the Phase 0 booking assistant chat (see Phase 0 section)
 - Contact
+- Privacy — plain-English privacy page (linked from the footer copyright bar)
 - 404
 
 Planned, not yet built:
-- Services Overview page (`/services`) — until it exists, service pages are reachable only from the home grid and the footer
 - Service Areas page (with the interactive Mapbox map)
 
 There is no dedicated Reviews page. Social proof on the Home is reframed as "Forty Years of Trust" until real Google Reviews exist.
