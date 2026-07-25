@@ -1,7 +1,13 @@
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 import { ImageResponse } from "next/og";
 
 // Dynamic Open Graph image, generated at build time and served automatically
 // when the site is shared on social platforms (LinkedIn, Twitter, iMessage, …).
+//
+// The Patriot mark leads the card — the same full-color logo the Home hero
+// shows, so a shared link is recognisable before a word is read. Satori cannot
+// fetch assets over the network here, so the SVG is inlined as a data URI.
 //
 // Typography is loaded from Google Fonts at build time so the image renders in
 // the real brand faces — Fraunces (display serif) and IBM Plex Mono (labels) —
@@ -38,7 +44,15 @@ async function loadGoogleFont(cssUrl: string): Promise<ArrayBuffer> {
   return fetch(match[1]).then((res) => res.arrayBuffer());
 }
 
+// Read the brand mark off disk and inline it. Runs at build time, so the file
+// is always present and the cost is paid once.
+async function loadLogo(): Promise<string> {
+  const svg = await readFile(join(process.cwd(), "public/logo/patriot-color.svg"));
+  return `data:image/svg+xml;base64,${svg.toString("base64")}`;
+}
+
 export default async function Image() {
+  const logo = await loadLogo();
   const [fraunces, plexMono] = await Promise.all([
     loadGoogleFont(
       "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&display=swap",
@@ -63,29 +77,9 @@ export default async function Image() {
           fontFamily: "Fraunces",
         }}
       >
-        {/* Top eyebrow */}
-        <div
-          style={{
-            fontFamily: "IBM Plex Mono",
-            fontSize: 28,
-            color: "#8B6F47",
-            letterSpacing: "0.2em",
-            textTransform: "uppercase",
-          }}
-        >
-          EST. 1983 · STOCKDALE, TEXAS
-        </div>
-
-        {/* Decorative line (top) */}
-        <div
-          style={{
-            width: 200,
-            height: 2,
-            background: "#8B6F47",
-            marginTop: 40,
-            marginBottom: 50,
-          }}
-        />
+        {/* Brand mark — the hero of the card */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={logo} alt="" width={210} height={208} style={{ marginBottom: 44 }} />
 
         {/* Main title */}
         <div
@@ -95,7 +89,7 @@ export default async function Image() {
             alignItems: "center",
             fontFamily: "Fraunces",
             fontWeight: 600,
-            fontSize: 88,
+            fontSize: 64,
             color: "#1B2A3C",
             lineHeight: 1.05,
             textAlign: "center",
@@ -106,14 +100,14 @@ export default async function Image() {
           <span>OF TEXAS</span>
         </div>
 
-        {/* Decorative line (bottom) */}
+        {/* Decorative line */}
         <div
           style={{
             width: 200,
             height: 2,
             background: "#8B6F47",
-            marginTop: 50,
-            marginBottom: 40,
+            marginTop: 36,
+            marginBottom: 32,
           }}
         />
 
