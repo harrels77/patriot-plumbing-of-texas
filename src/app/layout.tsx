@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Fraunces, Inter, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
-import FloatingCallButton from "@/components/FloatingCallButton";
+import FloatingActions from "@/components/FloatingActions";
 import StructuredData from "@/components/StructuredData";
 import SiteNav from "@/components/SiteNav";
 import { business } from "@/data/business";
@@ -69,7 +69,7 @@ export default function RootLayout({
       >
         <SiteNav />
         {children}
-        <FloatingCallButton />
+        <FloatingActions />
         <StructuredData />
       </body>
     </html>
