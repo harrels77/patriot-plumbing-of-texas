@@ -28,6 +28,14 @@ export default function SiteNav() {
 
         {/* Right cluster — nav links + CTA */}
         <div className="flex items-center gap-5 sm:gap-8">
+          {/* Hidden on the smallest screens — the nav is at capacity there;
+              mobile still reaches services via the home grid and the footer. */}
+          <Link
+            href="/services"
+            className="hidden font-mono text-xs uppercase tracking-[0.2em] text-navy transition-colors hover:text-rust sm:inline"
+          >
+            Services
+          </Link>
           <Link
             href="/about"
             className="font-mono text-xs uppercase tracking-[0.2em] text-navy transition-colors hover:text-rust"

@@ -97,7 +97,7 @@ export default function Home() {
       </div>
     </section>
 
-    {/* Services Overview — array-driven grid of the six core services */}
+    {/* Services Overview — array-driven grid of the core services */}
     <section aria-label="Our services" className="bg-cream py-16 sm:py-20 lg:py-24">
       <div className="mx-auto max-w-7xl px-6 sm:px-10">
         {/* Heading block */}
