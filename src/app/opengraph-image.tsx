@@ -70,58 +70,96 @@ export default async function Image() {
           height: "100%",
           display: "flex",
           flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
           background: "#F5F1E8",
-          padding: "80px",
           fontFamily: "Fraunces",
         }}
       >
-        {/* Brand mark — the hero of the card */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={logo} alt="" width={210} height={208} style={{ marginBottom: 44 }} />
+        {/* Editorial split — mark on the left, type on the right */}
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            padding: "0 76px",
+          }}
+        >
+          {/* Brand mark — first read, sized to lead the card */}
+          <img src={logo} alt="" width={344} height={341} />
 
-        {/* Main title */}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              marginLeft: 62,
+            }}
+          >
+            {/* Eyebrow */}
+            <div
+              style={{
+                fontFamily: "IBM Plex Mono",
+                fontSize: 21,
+                color: "#8B6F47",
+                letterSpacing: "0.2em",
+                textTransform: "uppercase",
+              }}
+            >
+              Family-owned · Stockdale, Texas
+            </div>
+
+            {/* Wordmark */}
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                fontFamily: "Fraunces",
+                fontWeight: 600,
+                fontSize: 58,
+                color: "#1B2A3C",
+                lineHeight: 1.05,
+                letterSpacing: "-0.02em",
+                marginTop: 22,
+              }}
+            >
+              <span>PATRIOT PLUMBING</span>
+              <span>OF TEXAS</span>
+            </div>
+
+            {/* Rust rule — the accent the palette reserves for emphasis */}
+            <div
+              style={{
+                width: 96,
+                height: 3,
+                background: "#A8323A",
+                marginTop: 30,
+                marginBottom: 28,
+              }}
+            />
+
+            {/* The Home hero claim, carried onto the card */}
+            <div style={{ fontFamily: "Fraunces", fontSize: 32, color: "#1A1614" }}>
+              Honest plumbing. Forty years.
+            </div>
+          </div>
+        </div>
+
+        {/* Navy footer bar — the phone is the primary CTA, so it travels with
+            the card. Hours are stated so the card never implies 24/7. */}
         <div
           style={{
             display: "flex",
-            flexDirection: "column",
             alignItems: "center",
-            fontFamily: "Fraunces",
-            fontWeight: 600,
-            fontSize: 64,
-            color: "#1B2A3C",
-            lineHeight: 1.05,
-            textAlign: "center",
-            letterSpacing: "-0.02em",
-          }}
-        >
-          <span>PATRIOT PLUMBING</span>
-          <span>OF TEXAS</span>
-        </div>
-
-        {/* Decorative line */}
-        <div
-          style={{
-            width: 200,
-            height: 2,
-            background: "#8B6F47",
-            marginTop: 36,
-            marginBottom: 32,
-          }}
-        />
-
-        {/* Bottom tagline */}
-        <div
-          style={{
+            justifyContent: "center",
+            height: 96,
+            background: "#1B2A3C",
             fontFamily: "IBM Plex Mono",
-            fontSize: 32,
-            color: "#A8323A",
-            letterSpacing: "0.15em",
+            fontSize: 24,
+            color: "#F5F1E8",
+            letterSpacing: "0.14em",
             textTransform: "uppercase",
           }}
         >
-          Family-owned · Forty years
+          (210) 857-1727 · Mon–Fri 8 AM – 5 PM
         </div>
       </div>
     ),
